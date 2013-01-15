@@ -11,13 +11,16 @@ function LoginCtrl($scope, $http, authService) {
 		console.log("username: " + $scope.username);
 		console.log("passoword: " + $scope.password);
     
-      var credentials = $.base64.encode($scope.username + ":" + $scope.password);
-      
-      console.log("credentials: " + credentials);
-    
-      $http.get('user/login',{headers: {'Authorization': 'Basic ' + credentials}}).success(function() {
-        authService.loginConfirmed();
-      });
+		var loginRequest = {username: $scope.username, password: $scope.password}
+	
+      $http.post('/user/login',loginRequest)
+		.success(function() {
+			authService.loginConfirmed();
+		})
+		.error(function(response) {
+			console.log(response);
+			alert("Sie konnten nicht angemeldet werden!");
+		});
     }
   }
 

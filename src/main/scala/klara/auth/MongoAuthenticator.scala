@@ -1,5 +1,4 @@
 package karla.auth
-import scala.concurrent.{ExecutionContext, Promise}
 import spray.routing.authentication._
 
 import reactivemongo.api._

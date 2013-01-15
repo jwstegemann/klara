@@ -1,0 +1,224 @@
+<NotepadPlus>
+    <Project name="klara">
+        <Folder name="mongoDB">
+            <File name="mongoDB\create_scripts" />
+        </Folder>
+        <Folder name="project">
+            <Folder name="project">
+                <Folder name="target">
+                    <Folder name="config-classes">
+                        <File name="project\project\target\config-classes\$832ac6cfb351713e84d1$.class" />
+                        <File name="project\project\target\config-classes\$832ac6cfb351713e84d1.class" />
+                        <File name="project\project\target\config-classes\$e6388ae4a1133171ce4c$$anonfun$$sbtdef$1.class" />
+                        <File name="project\project\target\config-classes\$e6388ae4a1133171ce4c$.class" />
+                        <File name="project\project\target\config-classes\$e6388ae4a1133171ce4c.class" />
+                    </Folder>
+                </Folder>
+            </Folder>
+            <Folder name="target">
+                <Folder name="config-classes">
+                    <File name="project\target\config-classes\$0211846607b251e82cc9$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$0211846607b251e82cc9$.class" />
+                    <File name="project\target\config-classes\$0211846607b251e82cc9.class" />
+                    <File name="project\target\config-classes\$08d4d3df6d476aa599aa$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$08d4d3df6d476aa599aa$.class" />
+                    <File name="project\target\config-classes\$08d4d3df6d476aa599aa.class" />
+                    <File name="project\target\config-classes\$1bccf9d88656448d1d0d$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$1bccf9d88656448d1d0d$.class" />
+                    <File name="project\target\config-classes\$1bccf9d88656448d1d0d.class" />
+                    <File name="project\target\config-classes\$427efdd861cbd81b1a94$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$427efdd861cbd81b1a94$.class" />
+                    <File name="project\target\config-classes\$427efdd861cbd81b1a94.class" />
+                    <File name="project\target\config-classes\$619bd7b04d3a19cc579d$.class" />
+                    <File name="project\target\config-classes\$619bd7b04d3a19cc579d.class" />
+                    <File name="project\target\config-classes\$974196d5ea0b86a2e825$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$974196d5ea0b86a2e825$.class" />
+                    <File name="project\target\config-classes\$974196d5ea0b86a2e825.class" />
+                    <File name="project\target\config-classes\$9eb40e124a7dd0788a21$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$9eb40e124a7dd0788a21$.class" />
+                    <File name="project\target\config-classes\$9eb40e124a7dd0788a21.class" />
+                    <File name="project\target\config-classes\$e29bdf5f10cf241f23fd$$anonfun$$sbtdef$1.class" />
+                    <File name="project\target\config-classes\$e29bdf5f10cf241f23fd$.class" />
+                    <File name="project\target\config-classes\$e29bdf5f10cf241f23fd.class" />
+                </Folder>
+                <Folder name="resolution-cache">
+                    <Folder name="default">
+                        <Folder name="default-72e4cf">
+                            <Folder name="scala_2.9.2">
+                                <Folder name="sbt_0.12">
+                                    <Folder name="0.1-SNAPSHOT">
+                                        <File name="project\target\resolution-cache\default\default-72e4cf\scala_2.9.2\sbt_0.12\0.1-SNAPSHOT\resolved.xml.properties" />
+                                        <File name="project\target\resolution-cache\default\default-72e4cf\scala_2.9.2\sbt_0.12\0.1-SNAPSHOT\resolved.xml.xml" />
+                                    </Folder>
+                                </Folder>
+                            </Folder>
+                        </Folder>
+                    </Folder>
+                    <Folder name="reports">
+                        <Folder name="default-default-72e4cf">
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\compile-internal-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\compile-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\docs-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\ivy-report.css" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\ivy-report.xsl" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\optional-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\plugin-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\pom-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\provided-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\runtime-internal-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\runtime-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\sources-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\test-internal-resolved.xml" />
+                            <File name="project\target\resolution-cache\reports\default-default-72e4cf\test-resolved.xml" />
+                        </Folder>
+                    </Folder>
+                </Folder>
+                <Folder name="scala-2.9.2">
+                    <Folder name="sbt-0.12">
+                        <Folder name="cache">
+                            <Folder name="default-72e4cf">
+                                <Folder name="compile">
+                                    <File name="project\target\scala-2.9.2\sbt-0.12\cache\default-72e4cf\compile\copy-resources" />
+                                </Folder>
+                                <Folder name="global">
+                                    <Folder name="update">
+                                        <File name="project\target\scala-2.9.2\sbt-0.12\cache\default-72e4cf\global\update\inputs" />
+                                        <File name="project\target\scala-2.9.2\sbt-0.12\cache\default-72e4cf\global\update\output" />
+                                    </Folder>
+                                </Folder>
+                            </Folder>
+                        </Folder>
+                    </Folder>
+                </Folder>
+                <Folder name="streams">
+                    <Folder name="$global">
+                        <Folder name="compilers">
+                            <Folder name="$global">
+                                <File name="project\target\streams\$global\compilers\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="ivy-configuration">
+                            <Folder name="$global">
+                                <File name="project\target\streams\$global\ivy-configuration\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="ivy-sbt">
+                            <Folder name="$global">
+                                <File name="project\target\streams\$global\ivy-sbt\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="project-descriptors">
+                            <Folder name="$global">
+                                <File name="project\target\streams\$global\project-descriptors\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="update">
+                            <Folder name="$global">
+                                <File name="project\target\streams\$global\update\$global\out" />
+                            </Folder>
+                        </Folder>
+                    </Folder>
+                    <Folder name="compile">
+                        <Folder name="$global">
+                            <Folder name="$global">
+                                <File name="project\target\streams\compile\$global\$global\data" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="compile">
+                            <Folder name="$global">
+                                <File name="project\target\streams\compile\compile\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="compile-inputs">
+                            <Folder name="$global">
+                                <File name="project\target\streams\compile\compile-inputs\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="copy-resources">
+                            <Folder name="$global">
+                                <File name="project\target\streams\compile\copy-resources\$global\out" />
+                            </Folder>
+                        </Folder>
+                        <Folder name="defined-sbt-plugins">
+                            <Folder name="$global">
+                                <File name="project\target\streams\compile\defined-sbt-plugins\$global\out" />
+                            </Folder>
+                        </Folder>
+                    </Folder>
+                </Folder>
+            </Folder>
+            <File name="project\build.properties" />
+            <File name="project\plugins.sbt" />
+        </Folder>
+        <Folder name="snippets">
+            <File name="snippets\routes.snippets" />
+        </Folder>
+        <Folder name="src">
+            <Folder name="main">
+                <Folder name="resources">
+                    <File name="src\main\resources\application.conf" />
+                    <File name="src\main\resources\logback.xml" />
+                </Folder>
+                <Folder name="scala">
+                    <Folder name="klara">
+                        <Folder name="auth">
+                            <File name="src\main\scala\klara\auth\MongoAuthenticator.scala" />
+                        </Folder>
+                        <Folder name="services">
+                            <File name="src\main\scala\klara\services\StaticService.scala" />
+                            <File name="src\main\scala\klara\services\UserService.scala" />
+                        </Folder>
+                        <File name="src\main\scala\klara\Boot.scala" />
+                    </Folder>
+                </Folder>
+                <Folder name="webapp">
+                    <Folder name="static">
+                        <Folder name="css">
+                            <File name="src\main\webapp\static\css\bootstrap.min.css" />
+                        </Folder>
+                        <Folder name="js">
+                            <Folder name="controllers">
+                                <File name="src\main\webapp\static\js\controllers\login.js" />
+                                <File name="src\main\webapp\static\js\controllers\schueler.js" />
+                            </Folder>
+                            <Folder name="services" />
+                            <File name="src\main\webapp\static\js\app.js" />
+                            <File name="src\main\webapp\static\js\auth.js" />
+                            <File name="src\main\webapp\static\js\directives.js" />
+                            <File name="src\main\webapp\static\js\filters.js" />
+                        </Folder>
+                        <Folder name="lib">
+                            <File name="src\main\webapp\static\lib\angular.min.js" />
+                            <File name="src\main\webapp\static\lib\bootstrap.min.js" />
+                            <File name="src\main\webapp\static\lib\jquery-1.8.3.min.js" />
+                            <File name="src\main\webapp\static\lib\jquery.base64.min.js" />
+                        </Folder>
+                        <Folder name="partials">
+                            <File name="src\main\webapp\static\partials\schuelerDetail.html" />
+                            <File name="src\main\webapp\static\partials\schuelerList.html" />
+                        </Folder>
+                        <File name="src\main\webapp\static\index.html" />
+                    </Folder>
+                </Folder>
+            </Folder>
+            <Folder name="test">
+                <Folder name="scala">
+                    <Folder name="spray">
+                        <Folder name="examples">
+                            <File name="src\test\scala\spray\examples\DemoServiceSpec.scala" />
+                        </Folder>
+                    </Folder>
+                </Folder>
+            </Folder>
+        </Folder>
+        <Folder name="target">
+            <File name="target\.history" />
+        </Folder>
+        <File name=".gitignore" />
+        <File name="build.sbt" />
+        <File name="build.sbt.bak" />
+        <File name="klara.sublime-project" />
+        <File name="klara.sublime-workspace" />
+        <File name="README.md" />
+    </Project>
+</NotepadPlus>
