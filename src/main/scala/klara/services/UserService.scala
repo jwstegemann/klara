@@ -26,21 +26,21 @@ import klara.auth.KlaraAuthJsonProtocol._
 import scala.concurrent.duration._
 import scala.concurrent.Await
 
+import language.postfixOps
+
 
 // this trait defines our service behavior independently from the service actor
 trait UserService extends HttpService with SprayJsonSupport{
 
   val userLogger = LoggerFactory.getLogger(getClass);
 
-  //TODO: make a trait from this
   /*
   implicit val klaraRejectionHandler = RejectionHandler.fromPF {
 	case AuthenticationRequiredRejection(scheme, realm, params) :: _ =>
 		complete(Unauthorized, "Please login")
   }
   */
-  /*
-											*/
+
   val userRoute = {
     pathPrefix("user") {
           path("login") {
@@ -58,20 +58,17 @@ trait UserService extends HttpService with SprayJsonSupport{
 											complete(OK);
 								 }
 							}	
-							case None => reject(AuthenticationFailedRejection("Klara"))
+							case None => reject(AuthorizationFailedRejection)
 						}
 					}
 				}
 			}
           } ~
 		  get {
-			  authenticate(SessionCookieAuth()) { user =>
+			  authenticate(SessionCookieAuth()) { userContext =>
 				  path("info") {
-					respondWithMediaType(`application/json`) {
-						userLogger.info("Userinfo for " + user.username + " requested")
-						//TODO: return user object here
-						complete("{\"username\": \"Karl\", \"info\": \"Otto\"}");
-					}
+					userLogger.info("Userinfo for " + userContext.username + " requested")
+					complete(userContext);
 				  }
 			  }
 		  }

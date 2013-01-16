@@ -5,10 +5,11 @@
 db.user.insert({
 	username: "hallo",
 	password: "3aab87f4384d3e7aa25ca4f99f9c49c9406a343877d1d215e814cefa23b8ec2b",
+	info: "TestInfo",
 	firstName: "Jens",
-	lastName: "Stegemann"
+	lastName: "Stegemann",
+	permissions: ["Permission1","Permission2"]
 });
-
 
 
 /*

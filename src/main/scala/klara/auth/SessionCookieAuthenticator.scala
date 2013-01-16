@@ -14,28 +14,34 @@ import java.util.UUID
 
 import reactivemongo.api._
 import reactivemongo.bson._
-import reactivemongo.bson.handlers.DefaultBSONHandlers._
+import reactivemongo.bson.handlers.BSONReader
+import reactivemongo.bson.handlers.DefaultBSONHandlers.{DefaultBSONDocumentWriter,DefaultBSONReaderHandler}
 
 import org.slf4j.{Logger, LoggerFactory}
 
+import language.postfixOps
+import spray.json._
+
+import scala.compat.Platform
 
 
 
-case class KlaraUserContext(username : String, info : String)
 
+//TODO: exclude as actor!
 object AuthenticationService {
 
-	val authLogger = LoggerFactory.getLogger(getClass);
+	private val authLogger = LoggerFactory.getLogger(getClass);
 
-	val SESSION_COOKIE_NAME = "klaraSessionId"
+	val SESSION_COOKIE_NAME = "sid"
 
-	case class Session(id : String, userContext : KlaraUserContext, host : String)
+	private case class Session(id : String, userContext : KlaraUserContext, host : String)
 
-	val sessions = TrieMap[String,Session]()
+	//TODO: schedule to remove old sessions when in actor
+	private val sessions = TrieMap[String,Session]()
 
-	val digest = java.security.MessageDigest.getInstance("SHA-256")
+	private val digest = java.security.MessageDigest.getInstance("SHA-256")
 
-	def sha( s:String ) : String = {
+	private def sha( s:String ) : String = {
   		val m = digest.digest(s.getBytes("UTF-8"));
   		m map {c => (c & 0xff) toHexString} mkString
 	}
@@ -47,20 +53,18 @@ object AuthenticationService {
 
 
 	def checkUser(username : String, password : String) : Future[Option[KlaraUserContext]] = {
+		implicit val reader = KlaraUserContext.BSONReader
+	
 		val query = BSONDocument("username" -> BSONString(username), "password" -> BSONString(sha(password)))
-
-  		collection.find(query).toList map { list =>
-  			if (list.size == 1) {
-  				Some(KlaraUserContext(username, list(0).getAs[BSONString]("lastName").get.value))
-			}
-			else {
-				None
-			}
+	
+  		collection.find(query).toList map {
+  			case userContext :: Nil => Some(userContext)
+  			case _ => None
   		}
 	}
 
 	def createSession(userContext : KlaraUserContext, hostName : String) : String = {
-		val time : Long = 13215
+		val time = Platform.currentTime
 		val host =  hostName.hashCode
 		val sessionId = new UUID(time,host).toString
 		sessions += (sessionId -> Session(sessionId, userContext, hostName))
@@ -68,13 +72,9 @@ object AuthenticationService {
 	}
 
 	def isSessionValid(sessionId : String, host : String) : Future[Option[KlaraUserContext]] = {
-		//TODO: include get in future?
-		authLogger.info("sessionId: " + sessionId)
-		authLogger.info("host: " + host)
-		//authLogger.info("username: " + sessions(sessionId).userContext.username)
-
 		future {
 			sessions.get(sessionId) match {
+				//TODO: implement session-timeout
 				case Some(Session(sessionId,userContext,host)) => Some(userContext)
 				case None => None
 			}

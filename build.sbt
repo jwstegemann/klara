@@ -4,17 +4,16 @@ version := "1.0"
 
 scalaVersion := "2.10.0"
 
-// use src/main/webapp
+scalacOptions ++= Seq( "-deprecation", "-unchecked", "-feature" )
 
+// use src/main/webapp
 unmanagedResourceDirectories in Compile <+= (baseDirectory) { _ / "src" / "main" / "webapp" }
 
 
 // sbt-revolver
-
 seq(Revolver.settings: _*)
 
 // Repositories
-
 resolvers ++= Seq(
 	"spray.io nightlies" at "http://nightlies.spray.io/",
 	"spray.io" at "http://repo.spray.io",
@@ -23,7 +22,6 @@ resolvers ++= Seq(
 )
 
 // Libraries
-
 libraryDependencies ++= Seq(
 	"io.spray"								  %   "spray-routing"				% "1.1-20130108",
 	"io.spray"								  %   "spray-can"					% "1.1-20130108",
@@ -42,7 +40,8 @@ libraryDependencies ++= Seq(
     "ch.qos.logback"                          %   "logback-classic"             % "1.0.9",
     "org.jvnet.mimepull"                      %   "mimepull"                    % "1.9.1",
     "org.pegdown"                             %   "pegdown"                     % "1.2.1",
-    "reactivemongo" %% "reactivemongo" % "0.1-SNAPSHOT" cross CrossVersion.full
+    "reactivemongo"                           %% "reactivemongo"                % "0.1-SNAPSHOT" cross CrossVersion.full,
+    "joda-time"                               % "joda-time"                     % "2.1"
 )
 
 

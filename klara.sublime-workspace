@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"BSON",
+				"BSONReader"
+			],
+			[
 				"Logger",
 				"LoggerFactory"
 			],
@@ -59,7 +63,7 @@
 			"file": "src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
 			"settings":
 			{
-				"buffer_size": 3311,
+				"buffer_size": 3361,
 				"line_ending": "Windows"
 			}
 		},
@@ -67,15 +71,47 @@
 			"file": "src/main/scala/klara/services/UserService.scala",
 			"settings":
 			{
-				"buffer_size": 2288,
+				"buffer_size": 2139,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/main/scala/klara/auth/MongoAuthenticator.scala",
+			"file": "src/main/scala/klara/auth/AuthenticationProtocoll.scala",
 			"settings":
 			{
-				"buffer_size": 1959,
+				"buffer_size": 1140,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/static/partials/schuelerDetail.html",
+			"settings":
+			{
+				"buffer_size": 533,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "mongoDB/create_scripts",
+			"settings":
+			{
+				"buffer_size": 1136,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "build.sbt",
+			"settings":
+			{
+				"buffer_size": 2313,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/scala/klara/services/StaticService.scala",
+			"settings":
+			{
+				"buffer_size": 819,
 				"line_ending": "Unix"
 			}
 		}
@@ -104,7 +140,10 @@
 	},
 	"file_history":
 	[
+		"/home/tiberius/scala/projects/klara/mongoDB/create_scripts",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/MongoAuthenticator.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/StaticService.scala",
 		"/home/tiberius/scala/projects/klara/snippets/routes.snippets",
@@ -189,7 +228,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -197,15 +236,15 @@
 					"file": "src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
 					"settings":
 					{
-						"buffer_size": 3311,
+						"buffer_size": 3361,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2106,
-								2106
+								2369,
+								2369
 							]
 						],
 						"settings":
@@ -213,7 +252,7 @@
 							"syntax": "Packages/Scala/Scala.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 918.0,
+						"translation.y": 468.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -223,15 +262,15 @@
 					"file": "src/main/scala/klara/services/UserService.scala",
 					"settings":
 					{
-						"buffer_size": 2288,
+						"buffer_size": 2139,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								288,
-								288
+								1147,
+								1147
 							]
 						],
 						"settings":
@@ -239,25 +278,25 @@
 							"syntax": "Packages/Scala/Scala.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 408.0,
+						"translation.y": 306.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "src/main/scala/klara/auth/MongoAuthenticator.scala",
+					"file": "src/main/scala/klara/auth/AuthenticationProtocoll.scala",
 					"settings":
 					{
-						"buffer_size": 1959,
+						"buffer_size": 1140,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1956,
-								1956
+								620,
+								620
 							]
 						],
 						"settings":
@@ -265,7 +304,116 @@
 							"syntax": "Packages/Scala/Scala.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 459.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/main/webapp/static/partials/schuelerDetail.html",
+					"settings":
+					{
+						"buffer_size": 533,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								452,
+								452
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "mongoDB/create_scripts",
+					"settings":
+					{
+						"buffer_size": 1136,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								28,
+								28
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "build.sbt",
+					"settings":
+					{
+						"buffer_size": 2313,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2299,
+								2299
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/main/scala/klara/services/StaticService.scala",
+					"settings":
+					{
+						"buffer_size": 819,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
