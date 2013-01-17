@@ -1,17 +1,16 @@
 package klara.services
 
 import scala.concurrent.duration._
-import scala.util.{Success, Failure}
+import scala.util.{ Success, Failure }
 import akka.pattern.ask
-import spray.routing.{HttpService, RequestContext}
+import spray.routing.{ HttpService, RequestContext }
 import spray.routing.directives.CachingDirectives
 import spray.can.server.HttpServer
 import spray.util._
 import spray.http._
 import MediaTypes._
 import CachingDirectives._
-import org.slf4j.{Logger, LoggerFactory}
-
+import org.slf4j.{ Logger, LoggerFactory }
 
 // this trait defines our service behavior independently from the service actor
 trait StaticService extends HttpService {
@@ -28,5 +27,4 @@ trait StaticService extends HttpService {
       }
     }
   }
-
 }
