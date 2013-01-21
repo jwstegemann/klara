@@ -18,7 +18,6 @@ import spray.json._
 import spray.httpx.marshalling._
 import spray.httpx.SprayJsonSupport
 
-import spray.routing.authentication.BasicAuth
 import klara.auth._
 import klara.auth.KlaraAuthJsonProtocol._
 
@@ -27,8 +26,14 @@ import scala.concurrent.Await
 
 import language.postfixOps
 
+import scala.compat.Platform
+import java.util.UUID
+
+
 // this trait defines our service behavior independently from the service actor
 trait UserService extends HttpService with SprayJsonSupport {
+
+  implicit val sessionServiceActor = actorRefFactory.actorFor("/user/session-service")
 
   val userLogger = LoggerFactory.getLogger(getClass);
 
@@ -49,8 +54,9 @@ trait UserService extends HttpService with SprayJsonSupport {
 
               userContextOption match {
                 case Some(userContext) => {
-                  setCookie(HttpCookie(AuthenticationService.SESSION_COOKIE_NAME,
-                    AuthenticationService.createSession(userContext, hostName), maxAge = Some(3600))) {
+                  val sid = createSessionId(hostName)
+                  setCookie(HttpCookie(AuthenticationService.SESSION_COOKIE_NAME, sid, maxAge = Some(3600))) {
+                    sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
                     userLogger.info("User " + loginRequest.username + ";" + loginRequest.password + " logged in.")
                     complete(OK);
                   }
@@ -62,7 +68,7 @@ trait UserService extends HttpService with SprayJsonSupport {
         }
       } ~
         get {
-          authenticate(SessionCookieAuth()) { userContext =>
+          authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
             path("info") {
               userLogger.info("Userinfo for " + userContext.username + " requested")
               complete(userContext);
@@ -70,5 +76,11 @@ trait UserService extends HttpService with SprayJsonSupport {
           }
         }
     }
+  }
+
+  def createSessionId(hostName: String): String = {
+    val time = Platform.currentTime
+    val host = hostName.hashCode
+    new UUID(time, host).toString
   }
 }

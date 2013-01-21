@@ -9,8 +9,7 @@ import scala.concurrent._
 import spray.routing.authentication._
 import spray.routing.{RequestContext,RoutingSettings,AuthenticationFailedRejection}
 
-import scala.collection.concurrent.TrieMap
-import java.util.UUID
+import klara.auth._
 
 import reactivemongo.api._
 import reactivemongo.bson._
@@ -22,20 +21,15 @@ import org.slf4j.{Logger, LoggerFactory}
 import language.postfixOps
 import spray.json._
 
-import scala.compat.Platform
+import akka.pattern.ask
+import akka.actor._
+import akka.util.Timeout
+import scala.concurrent.duration._
 
 
-//TODO: exclude as actor!
 object AuthenticationService {
 
-  private val authLogger = LoggerFactory.getLogger(getClass);
-
   val SESSION_COOKIE_NAME = "sid"
-
-  private case class Session(id: String, userContext: KlaraUserContext, host: String)
-
-  //TODO: schedule to remove old sessions when in actor
-  private val sessions = TrieMap[String, Session]()
 
   private val digest = java.security.MessageDigest.getInstance("SHA-256")
 
@@ -59,49 +53,34 @@ object AuthenticationService {
       case _ => None
     }
   }
-
-  def createSession(userContext: KlaraUserContext, hostName: String): String = {
-    val time = Platform.currentTime
-    val host = hostName.hashCode
-    val sessionId = new UUID(time, host).toString
-    sessions += (sessionId -> Session(sessionId, userContext, hostName))
-    sessionId
-  }
-
-  def isSessionValid(sessionId: String, host: String): Future[Option[KlaraUserContext]] = {
-    future {
-      sessions.get(sessionId) match {
-        //TODO: implement session-timeout
-        case Some(Session(sessionId, userContext, host)) => Some(userContext)
-        case None => None
-      }
-    }
-  }
 }
 
 /**
  * A SessionCookieAuthenticator is a ContextAuthenticator that uses credentials passed to the server via the
  * HTTP `Authorization` header to authenticate the user and extract a user object.
  */
-class SessionCookieAuthenticator(implicit val executionContext: ExecutionContext) extends ContextAuthenticator[KlaraUserContext] {
+class SessionCookieAuthenticator(sessionServiceActor : ActorRef)(implicit val executionContext: ExecutionContext) extends ContextAuthenticator[KlaraUserContext] {
+
+  implicit val timeout = new Timeout(2 seconds)
 
   def apply(ctx: RequestContext) = {
+
+    //TODO: find cookie in future
     val cookieOption: Option[HttpCookie] = ctx.request.cookies.find(_.name == AuthenticationService.SESSION_COOKIE_NAME)
 
     cookieOption match {
       case Some(sessionCookie) => {
-        AuthenticationService.isSessionValid(sessionCookie.content, ctx.request.host) map {
-          case Some(userContext) => Right(userContext)
+        sessionServiceActor ? IsSessionValidMsg(sessionCookie.content, ctx.request.host) map {
+          case Some(userContext : KlaraUserContext) => Right(userContext)
           case None => Left(AuthenticationFailedRejection("Klara"))
         }
       }
       case None => future { Left(AuthenticationFailedRejection("Klara")) }
     }
   }
-
 }
 
 object SessionCookieAuth {
-  def apply()(implicit ec: ExecutionContext): SessionCookieAuthenticator =
-    new SessionCookieAuthenticator()
+  def apply(sessionServiceActor : ActorRef)(implicit ec : ExecutionContext): SessionCookieAuthenticator =
+    new SessionCookieAuthenticator(sessionServiceActor)
 }
