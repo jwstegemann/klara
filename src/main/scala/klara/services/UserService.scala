@@ -34,6 +34,8 @@ import klara.auth.AuthenticationConstants._
 
 import akka.pattern.ask
 
+import spray.http.HttpHeaders._
+
 
 // this trait defines our service behavior independently from the service actor
 trait UserService extends HttpService with SprayJsonSupport {
@@ -59,20 +61,16 @@ trait UserService extends HttpService with SprayJsonSupport {
           hostName { hostName =>
             entity(as[LoginRequest]) { loginRequest =>
               val sid = createSessionId(hostName)
-              //TODO: do not send cookie when rejecting!
-              setCookie(HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))) {
-                val future = (userContextActor ? CheckUserMsg(loginRequest.username, loginRequest.password))
-
-                val result = future map {
-                  case Some(userContext : KlaraUserContext) => {
-                    sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
-                    OK
-                  }
-                  case None => Forbidden
+              val future = (userContextActor ? CheckUserMsg(loginRequest.username, loginRequest.password))
+              val result = future map {
+                case Some(userContext : KlaraUserContext) => {
+                  sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
+                  val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))
+                  HttpResponse(status=OK,headers=`Set-Cookie`(cookie) :: Nil)
                 }
-
-                complete(result)
+                case None => HttpResponse(status=Forbidden)
               }
+              complete(result)
             }
           }
         }
