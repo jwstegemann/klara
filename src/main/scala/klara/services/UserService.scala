@@ -22,20 +22,28 @@ import klara.auth._
 import klara.auth.KlaraAuthJsonProtocol._
 
 import scala.concurrent.duration._
-import scala.concurrent.Await
+import scala.concurrent._
+import akka.util.Timeout
 
 import language.postfixOps
 
 import scala.compat.Platform
 import java.util.UUID
 
+import klara.auth.AuthenticationConstants._
+
+import akka.pattern.ask
+
 
 // this trait defines our service behavior independently from the service actor
 trait UserService extends HttpService with SprayJsonSupport {
 
-  implicit val sessionServiceActor = actorRefFactory.actorFor("/user/session-service")
+  val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
+  val userContextActor = actorRefFactory.actorFor("/user/userContext")
 
-  val userLogger = LoggerFactory.getLogger(getClass);
+  lazy val userLogger = LoggerFactory.getLogger(getClass);
+
+  implicit val timeout = new Timeout(2 seconds)
 
   /*
   implicit val klaraRejectionHandler = RejectionHandler.fromPF {
@@ -50,18 +58,20 @@ trait UserService extends HttpService with SprayJsonSupport {
         post {
           hostName { hostName =>
             entity(as[LoginRequest]) { loginRequest =>
-              val userContextOption: Option[KlaraUserContext] = Await.result(AuthenticationService.checkUser(loginRequest.username, loginRequest.password), 1 second)
+              val sid = createSessionId(hostName)
+              //TODO: do not send cookie when rejecting!
+              setCookie(HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))) {
+                val future = (userContextActor ? CheckUserMsg(loginRequest.username, loginRequest.password))
 
-              userContextOption match {
-                case Some(userContext) => {
-                  val sid = createSessionId(hostName)
-                  setCookie(HttpCookie(AuthenticationService.SESSION_COOKIE_NAME, sid, maxAge = Some(3600))) {
+                val result = future map {
+                  case Some(userContext : KlaraUserContext) => {
                     sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
-                    userLogger.info("User " + loginRequest.username + ";" + loginRequest.password + " logged in.")
-                    complete(OK);
+                    OK
                   }
+                  case None => Forbidden
                 }
-                case None => reject(AuthorizationFailedRejection)
+
+                complete(result)
               }
             }
           }
@@ -78,9 +88,6 @@ trait UserService extends HttpService with SprayJsonSupport {
     }
   }
 
-  def createSessionId(hostName: String): String = {
-    val time = Platform.currentTime
-    val host = hostName.hashCode
-    new UUID(time, host).toString
-  }
+  def createSessionId(hostName: String) = new UUID(Platform.currentTime, hostName.hashCode).toString
+
 }

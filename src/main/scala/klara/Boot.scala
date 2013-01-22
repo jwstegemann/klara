@@ -5,6 +5,7 @@ import spray.can.server.SprayCanHttpServerApp
 import klara.services._
 
 import klara.auth.SessionServiceActor
+import klara.auth.UserContextActor
 
 class RootServiceActor extends Actor with UserService with StaticService {
 
@@ -18,7 +19,9 @@ class RootServiceActor extends Actor with UserService with StaticService {
 object Boot extends App with SprayCanHttpServerApp {
   
   // create and start the session service
-  val sessionService = system.actorOf(Props[SessionServiceActor], "session-service")	
+  val sessionService = system.actorOf(Props[SessionServiceActor], "sessionService")	
+  // create and start the userContext service
+  val userContext = system.actorOf(Props[UserContextActor], "userContext")  
 
   // create and start our routing service actors
   val rootService = system.actorOf(Props[RootServiceActor], "root-service")
