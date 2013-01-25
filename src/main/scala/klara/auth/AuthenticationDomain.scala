@@ -6,16 +6,21 @@ import reactivemongo.bson.BSONString
 import reactivemongo.bson.handlers.BSONReader
 import spray.json.DefaultJsonProtocol
 
+
+object AuthenticationConstants{
+  val SESSION_COOKIE_NAME = "sid"
+}
+
 case class LoginRequest(username: String, password: String)
 
-case class KlaraUserContext(username: String, info: String, firstName: String, lastName: String, permissions: List[String])
+case class UserContext(username: String, info: String, firstName: String, lastName: String, permissions: List[String])
 
-object KlaraUserContext {
-  implicit object BSONReader extends BSONReader[KlaraUserContext] {
-    def fromBSON(document: BSONDocument): KlaraUserContext = {
+object UserContext {
+  implicit object BSONReader extends BSONReader[UserContext] {
+    def fromBSON(document: BSONDocument): UserContext = {
       val doc = document.toTraversable
 
-      KlaraUserContext(
+      UserContext(
         doc.getAs[BSONString]("username").get.value,
         doc.getAs[BSONString]("info").get.value,
         doc.getAs[BSONString]("firstName").get.value,
@@ -29,6 +34,6 @@ object KlaraUserContext {
 
 object KlaraAuthJsonProtocol extends DefaultJsonProtocol {
   implicit val loginRequestFormat = jsonFormat2(LoginRequest)
-  implicit val klaraUserContextFormat = jsonFormat5(KlaraUserContext.apply)
+  implicit val UserContextFormat = jsonFormat5(UserContext.apply)
 }
 

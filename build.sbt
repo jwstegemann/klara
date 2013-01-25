@@ -18,7 +18,8 @@ resolvers ++= Seq(
 	"spray.io nightlies" at "http://nightlies.spray.io/",
 	"spray.io" at "http://repo.spray.io",
 	"Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-    "sgodbillon" at "https://bitbucket.org/sgodbillon/repository/raw/master/snapshots/"
+    "sgodbillon" at "https://bitbucket.org/sgodbillon/repository/raw/master/snapshots/",
+    "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/maven-snapshots"
 )
 
 // Libraries

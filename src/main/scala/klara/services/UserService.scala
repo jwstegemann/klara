@@ -18,19 +18,34 @@ import spray.json._
 import spray.httpx.marshalling._
 import spray.httpx.SprayJsonSupport
 
-import spray.routing.authentication.BasicAuth
 import klara.auth._
 import klara.auth.KlaraAuthJsonProtocol._
 
 import scala.concurrent.duration._
-import scala.concurrent.Await
+import scala.concurrent._
+import akka.util.Timeout
 
 import language.postfixOps
+
+import scala.compat.Platform
+import java.util.UUID
+
+import klara.auth.AuthenticationConstants._
+
+import akka.pattern.ask
+
+import spray.http.HttpHeaders._
+
 
 // this trait defines our service behavior independently from the service actor
 trait UserService extends HttpService with SprayJsonSupport {
 
-  val userLogger = LoggerFactory.getLogger(getClass);
+  val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
+  val userContextActor = actorRefFactory.actorFor("/user/userContext")
+
+  lazy val userLogger = LoggerFactory.getLogger(getClass);
+
+  implicit val timeout = new Timeout(2 seconds)
 
   /*
   implicit val klaraRejectionHandler = RejectionHandler.fromPF {
@@ -45,24 +60,23 @@ trait UserService extends HttpService with SprayJsonSupport {
         post {
           hostName { hostName =>
             entity(as[LoginRequest]) { loginRequest =>
-              val userContextOption: Option[KlaraUserContext] = Await.result(AuthenticationService.checkUser(loginRequest.username, loginRequest.password), 1 second)
-
-              userContextOption match {
-                case Some(userContext) => {
-                  setCookie(HttpCookie(AuthenticationService.SESSION_COOKIE_NAME,
-                    AuthenticationService.createSession(userContext, hostName), maxAge = Some(3600))) {
-                    userLogger.info("User " + loginRequest.username + ";" + loginRequest.password + " logged in.")
-                    complete(OK);
-                  }
+              val sid = createSessionId(hostName)
+              val future = (userContextActor ? CheckUserMsg(loginRequest.username, loginRequest.password))
+              val result = future map {
+                case Some(userContext : UserContext) => {
+                  sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
+                  val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))
+                  HttpResponse(status=OK,headers=`Set-Cookie`(cookie) :: Nil)
                 }
-                case None => reject(AuthorizationFailedRejection)
+                case None => HttpResponse(status=Forbidden)
               }
+              complete(result)
             }
           }
         }
       } ~
         get {
-          authenticate(SessionCookieAuth()) { userContext =>
+          authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
             path("info") {
               userLogger.info("Userinfo for " + userContext.username + " requested")
               complete(userContext);
@@ -71,4 +85,7 @@ trait UserService extends HttpService with SprayJsonSupport {
         }
     }
   }
+
+  def createSessionId(hostName: String) = new UUID(Platform.currentTime, hostName.hashCode).toString
+
 }
