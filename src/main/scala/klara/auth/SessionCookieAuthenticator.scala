@@ -7,7 +7,6 @@ import spray.routing.authentication._
 import spray.routing.{RequestContext,RoutingSettings,AuthenticationFailedRejection}
 import spray.json._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
 
@@ -27,7 +26,7 @@ import klara.auth.AuthenticationConstants._
  * A SessionCookieAuthenticator is a ContextAuthenticator that uses credentials passed to the server via the
  * HTTP `Authorization` header to authenticate the user and extract a user object.
  */
-class SessionCookieAuthenticator(sessionServiceActor : ActorRef)(implicit val executionContext: ExecutionContext) extends ContextAuthenticator[KlaraUserContext] {
+class SessionCookieAuthenticator(sessionServiceActor : ActorRef)(implicit val executionContext: ExecutionContext) extends ContextAuthenticator[UserContext] {
 
   implicit val timeout = new Timeout(2 seconds)
 
@@ -39,7 +38,7 @@ class SessionCookieAuthenticator(sessionServiceActor : ActorRef)(implicit val ex
     cookieOption match {
       case Some(sessionCookie) => {
         sessionServiceActor ? IsSessionValidMsg(sessionCookie.content, ctx.request.host) map {
-          case Some(userContext : KlaraUserContext) => Right(userContext)
+          case Some(userContext : UserContext) => Right(userContext)
           case None => Left(AuthenticationFailedRejection("Klara"))
         }
       }

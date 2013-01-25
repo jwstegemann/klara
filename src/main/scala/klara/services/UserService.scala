@@ -63,7 +63,7 @@ trait UserService extends HttpService with SprayJsonSupport {
               val sid = createSessionId(hostName)
               val future = (userContextActor ? CheckUserMsg(loginRequest.username, loginRequest.password))
               val result = future map {
-                case Some(userContext : KlaraUserContext) => {
+                case Some(userContext : UserContext) => {
                   sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
                   val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))
                   HttpResponse(status=OK,headers=`Set-Cookie`(cookie) :: Nil)

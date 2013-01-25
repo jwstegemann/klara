@@ -8,14 +8,15 @@ import reactivemongo.bson._
 import reactivemongo.bson.handlers.BSONReader
 import reactivemongo.bson.handlers.DefaultBSONHandlers.{DefaultBSONDocumentWriter,DefaultBSONReaderHandler}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import language.postfixOps
 
 
 case class CheckUserMsg(username : String, password : String)
 
+
 class UserContextActor extends Actor with ActorLogging {
+
+  implicit val ec = context.dispatcher
 
   override def preStart =  {
     log.info("UserContextActor starting at: {}", self.path)
@@ -46,7 +47,7 @@ class UserContextActor extends Actor with ActorLogging {
   def checkUser(username: String, password: String) = {
     log.info("checking user {} with {}...", username, password)
 
-    implicit val reader = KlaraUserContext.BSONReader
+    implicit val reader = UserContext.BSONReader
 
     val query = BSONDocument("username" -> BSONString(username), "password" -> BSONString(sha(password)))
 
