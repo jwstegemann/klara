@@ -1,7 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html ng-app="klara">
   <head>
-  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  	<meta charset="utf-8">
     <title>Klara - Lerncoaching Stegemann</title>
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
@@ -31,12 +31,12 @@
           <a class="brand" href="#">Lerncoaching Stegemann</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">Username</a>
+              <i class="icon-user icon-white"></i> <a href="#" class="navbar-link">Username</a>
             </p>
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
-              <li><a href="##/schueler">Schüler</a></li>
-              <li><a href="##/schuelerDetail/12345">SchülerDetail</a></li>
+              <li><a href="##/schueler">SchÃ¼ler</a></li>
+              <li><a href="##/schuelerDetail/12345">SchÃ¼lerDetail</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -60,7 +60,7 @@
   <!-- Login-Modal -->
   <div id="login-holder" class="modal hide fade" tabindex="-1" ng:controller="LoginCtrl">
     <div class="modal-header">
-      <h3 id="loginHolderLabel">Benutzeranmeldung</h3>
+      <h3 id="loginHolderLabel">Login</h3>
     </div>
     <div class="modal-body">
       <div id="loginError" class="alert alert-error hide fade in">
@@ -78,7 +78,7 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" ng-click="login()">anmelden</button>
+      <button class="btn btn-primary" ng-click="login()"><i class="icon-thumbs-up icon-white"></i> anmelden</button>
     </div>
   </div>
   <!-- end Login-Modal -->
