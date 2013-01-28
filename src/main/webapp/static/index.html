@@ -18,8 +18,9 @@
     <script type="text/javascript" src="js/auth.js"></script>
     <script type="text/javascript" src="js/controllers/schueler.js"></script>
     <script type="text/javascript" src="js/controllers/login.js"></script>
+    <script type="text/javascript" src="js/controllers/user.js"></script>
   </head>
-  <body >
+  <body ng-controller="UserCtrl" ng-init="init()">
     <div class="navbar navbar-inverse navbar-fixed-top" >
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -31,7 +32,7 @@
           <a class="brand" href="#">Lerncoaching Stegemann</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              <i class="icon-user icon-white"></i> <a href="#" class="navbar-link">Username</a>
+              <i class="icon-user icon-white"></i> <a href="#" class="navbar-link">{{user.firstName}}&nbsp;{{user.lastName}}</a>
             </p>
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
