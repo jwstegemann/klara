@@ -30,8 +30,6 @@ import language.postfixOps
 import scala.compat.Platform
 import java.util.UUID
 
-import klara.auth.AuthenticationConstants._
-
 import akka.pattern.ask
 
 import spray.http.HttpHeaders._

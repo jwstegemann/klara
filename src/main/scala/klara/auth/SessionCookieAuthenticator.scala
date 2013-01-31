@@ -19,8 +19,6 @@ import akka.util.Timeout
 
 import language.postfixOps
 
-import klara.auth.AuthenticationConstants._
-
 
 /**
  * A SessionCookieAuthenticator is a ContextAuthenticator that uses credentials passed to the server via the

@@ -7,10 +7,6 @@ import reactivemongo.bson.handlers.BSONReader
 import spray.json.DefaultJsonProtocol
 
 
-object AuthenticationConstants{
-  val SESSION_COOKIE_NAME = "sid"
-}
-
 case class LoginRequest(username: String, password: String)
 
 case class UserContext(username: String, info: String, firstName: String, lastName: String, permissions: List[String])

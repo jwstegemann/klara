@@ -10,27 +10,18 @@ import reactivemongo.bson.handlers.DefaultBSONHandlers.{DefaultBSONDocumentWrite
 
 import language.postfixOps
 
+import klara.mongo.MongoUsingActor
+
 
 case class CheckUserMsg(username : String, password : String)
 
 
-class UserContextActor extends Actor with ActorLogging {
-
-  implicit val ec = context.dispatcher
+class UserContextActor extends MongoUsingActor {
 
   override def preStart =  {
     log.info("UserContextActor starting at: {}", self.path)
   }
 
-  val config = context.system.settings.config
-
-  val mongodbUrl = config.getString("klara.mongodb.url")
-  val mongodbDb = config.getString("klara.mongodb.db")
-
-  log.info("creating connection to {}@{}", mongodbDb, mongodbUrl)
-
-  val connection = MongoConnection(List(mongodbUrl))
-  val db = connection(mongodbDb)
   val collection = db("user")
 
   def receive = {
