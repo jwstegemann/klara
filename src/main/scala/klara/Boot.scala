@@ -1,18 +1,22 @@
 package klara
 
-import akka.actor.{Props, Actor}
+import akka.actor.{Props, Actor, ActorLogging}
 import spray.can.server.SprayCanHttpServerApp
 import klara.services._
 
 import klara.auth.SessionServiceActor
 import klara.auth.UserContextActor
 
-class RootServiceActor extends Actor with UserService with StaticService {
+import klara.schueler.SchuelerActor
+import klara.schueler.SchuelerService
+
+
+class RootServiceActor extends Actor with ActorLogging with SchuelerService with UserService with StaticService {
 
   def actorRefFactory = context
 
   def receive = runRoute(
-    userRoute ~ staticRoute
+    userRoute ~ schuelerRoute ~ staticRoute
   )
 }
 
@@ -22,6 +26,8 @@ object Boot extends App with SprayCanHttpServerApp {
   val sessionService = system.actorOf(Props[SessionServiceActor], "sessionService")	
   // create and start the userContext service
   val userContext = system.actorOf(Props[UserContextActor], "userContext")  
+  // create and start the schueler service
+  val schueler = system.actorOf(Props[SchuelerActor], "schueler")  
 
   // create and start our routing service actors
   val rootService = system.actorOf(Props[RootServiceActor], "root-service")

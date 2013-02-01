@@ -19,7 +19,7 @@ case class CheckUserMsg(username : String, password : String)
 class UserContextActor extends MongoUsingActor {
 
   override def preStart =  {
-    log.info("UserContextActor starting at: {}", self.path)
+    log.info("UserContextActor started at: {}", self.path)
   }
 
   val collection = db("user")
@@ -42,12 +42,7 @@ class UserContextActor extends MongoUsingActor {
 
     val query = BSONDocument("username" -> BSONString(username), "password" -> BSONString(sha(password)))
 
-    val userContextOption = collection.find(query).toList map {
-      case userContext :: Nil => Some(userContext)
-      case _ => None
-    }
-
-    userContextOption pipeTo sender
+    collection.find(query).headOption pipeTo sender
   }
 
 }

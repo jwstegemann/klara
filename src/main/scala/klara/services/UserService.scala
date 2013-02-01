@@ -7,7 +7,6 @@ import spray.util._
 import spray.http._
 import MediaTypes._
 import CachingDirectives._
-import org.slf4j.{ Logger, LoggerFactory }
 import spray.routing._
 import spray.http._
 import StatusCodes._
@@ -31,19 +30,18 @@ import scala.compat.Platform
 import java.util.UUID
 
 import akka.pattern.ask
+import akka.actor.ActorLogging
 
 import spray.http.HttpHeaders._
 
 
 // this trait defines our service behavior independently from the service actor
-trait UserService extends HttpService with SprayJsonSupport {
+trait UserService extends HttpService with SprayJsonSupport { self : ActorLogging =>
 
   val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
   val userContextActor = actorRefFactory.actorFor("/user/userContext")
 
-  lazy val userLogger = LoggerFactory.getLogger(getClass);
-
-  implicit val timeout = new Timeout(2 seconds)
+  private implicit val timeout = new Timeout(2 seconds)
 
   /*
   implicit val klaraRejectionHandler = RejectionHandler.fromPF {
@@ -58,10 +56,10 @@ trait UserService extends HttpService with SprayJsonSupport {
         post {
           hostName { hostName =>
             entity(as[LoginRequest]) { loginRequest =>
-              val sid = createSessionId(hostName)
               val future = (userContextActor ? CheckUserMsg(loginRequest.username, loginRequest.password))
               val result = future map {
                 case Some(userContext : UserContext) => {
+                  val sid = createSessionId(hostName)
                   sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
                   val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))
                   HttpResponse(status=OK,headers=`Set-Cookie`(cookie) :: Nil)
@@ -76,7 +74,7 @@ trait UserService extends HttpService with SprayJsonSupport {
         get {
           authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
             path("info") {
-              userLogger.info("Userinfo for " + userContext.username + " requested")
+              log.info("Userinfo for " + userContext.username + " requested")
               complete(userContext);
             }
           }

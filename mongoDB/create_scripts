@@ -11,6 +11,21 @@ db.user.insert({
 	permissions: ["Permission1","Permission2"]
 });
 
+/*
+ * Schueler anlegen
+ */
+
+ db.schueler.insert({
+ 	name: "Müller",
+ 	vorname: "Hans"
+ });
+
+ db.schueler.insert({
+ 	name: "Meier",
+ 	vorname: "Petra"
+ });
+
+// ***************************************** 
 
 /*
  * Tokens

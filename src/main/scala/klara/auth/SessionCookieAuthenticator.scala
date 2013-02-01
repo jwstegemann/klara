@@ -30,7 +30,6 @@ class SessionCookieAuthenticator(sessionServiceActor : ActorRef)(implicit val ex
 
   def apply(ctx: RequestContext) = {
 
-    //TODO: find cookie in future
     val cookieOption: Option[HttpCookie] = ctx.request.cookies.find(_.name == SESSION_COOKIE_NAME)
 
     cookieOption match {

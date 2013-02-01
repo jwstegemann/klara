@@ -30,7 +30,7 @@ class SessionServiceActor extends Actor with ActorLogging {
   val expireInterval = config.getInt("klara.session.expire")
 
   override def preStart =  {
-    log.info("SessionServiceActor starting at: {}", self.path)
+    log.info("SessionServiceActor started at: {}", self.path)
 
     // expire sessions regularly
     context.system.scheduler.schedule(expireInterval seconds,
