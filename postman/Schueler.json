@@ -1,0 +1,3 @@
+
+<!-- saved from url=(0086)filesystem:chrome-extension://fdmmgilgnpjigdojojpjoooidkmcomcm/temporary/Schueler.json -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">{"id":"825028f9-3cc7-a33c-26b5-231f2e3fd320","name":"Schueler","timestamp":1359678158781,"requests":[{"collectionId":"825028f9-3cc7-a33c-26b5-231f2e3fd320","id":"3de0c115-7713-ca47-5de0-aa4776da6e15","name":"SchuelerList","description":"List of Schueler","url":"http://localhost:8080/schueler","method":"GET","headers":"Content-Type: application/json\n","data":[],"dataMode":"params","timestamp":0,"version":2,"time":1361024699242}]}</pre></body></html>

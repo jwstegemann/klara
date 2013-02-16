@@ -38,7 +38,7 @@ import spray.http.HttpHeaders._
 // this trait defines our service behavior independently from the service actor
 trait UserService extends HttpService with SprayJsonSupport { self : ActorLogging =>
 
-  val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
+  private val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
   val userContextActor = actorRefFactory.actorFor("/user/userContext")
 
   private implicit val timeout = new Timeout(2 seconds)
@@ -61,7 +61,7 @@ trait UserService extends HttpService with SprayJsonSupport { self : ActorLoggin
                 case Some(userContext : UserContext) => {
                   val sid = createSessionId(hostName)
                   sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)
-                  val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, maxAge = Some(3600))
+                  val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, path = Some("/"), maxAge = Some(3600))
                   HttpResponse(status=OK,headers=`Set-Cookie`(cookie) :: Nil)
                 }
                 case None => HttpResponse(status=Forbidden)

@@ -45,7 +45,6 @@ class SessionServiceActor extends Actor with ActorLogging {
     def withAccessTime(accessTime: Long) = this.copy(lastAccess = accessTime)
   }
 
-  //TODO: schedule to remove old sessions when in actor
   private var sessions = TrieMap[String, Session]()
 
   def receive = {

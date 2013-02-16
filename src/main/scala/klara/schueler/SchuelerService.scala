@@ -28,6 +28,8 @@ import akka.actor.ActorLogging
 
 import klara.schueler.SchuelerJsonProtocol._
 
+import klara.auth.SessionCookieAuth
+
 
 // this trait defines our service behavior independently from the service actor
 trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLogging =>
@@ -35,6 +37,9 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
   val schuelerActor = actorRefFactory.actorFor("/user/schueler")
 
   private implicit val timeout = new Timeout(2 seconds)
+
+  //TODO: make this implicit in a trait?
+  private val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
 
   /*
   implicit val klaraRejectionHandler = RejectionHandler.fromPF {
@@ -45,12 +50,14 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
 
   val schuelerRoute = {
     pathPrefix("schueler") {
-      path("") {
-        get {
-          val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
-          complete(list)
-        }
-      } 
+      authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
+        path("") {
+          get {
+            val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
+            complete(list)
+          }
+        } 
+      }
     }
   }
 
