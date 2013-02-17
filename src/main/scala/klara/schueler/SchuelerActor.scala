@@ -14,6 +14,10 @@ import klara.mongo.MongoUsingActor
 
 
 case class FindAll()
+case class Create(item: Schueler)
+case class Load(id: String)
+case class Update(item: Schueler)
+case class Delete(id: String)
 
 
 class SchuelerActor extends MongoUsingActor {
@@ -26,6 +30,10 @@ class SchuelerActor extends MongoUsingActor {
 
   def receive = {
     case FindAll() => findAll()
+    case Create(item) => create(item)
+    case Load(id) => load(id)
+    case Update(item) => update(item)
+    case Delete(id) => delete(id)
   }
 
   def findAll() = {
@@ -38,4 +46,23 @@ class SchuelerActor extends MongoUsingActor {
     collection.find(query).toList pipeTo sender
   }
 
+  def create(item: Schueler) = {
+    log.debug("creating new Schueler '{}'", item)
+
+    implicit val writer = Schueler.BSONWriter
+
+    collection.insert(item) pipeTo sender
+  }
+
+  def load(id: String) = {
+    log.debug("loading Schueler with id '{}'", id)
+  }
+
+  def update(item: Schueler) = {
+    log.debug("updating Schueler with id '{}'", item)
+  }
+
+  def delete(id: String) = {
+    log.debug("deleting Schueler with id '{}'", id)
+  }
 }

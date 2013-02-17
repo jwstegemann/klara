@@ -55,6 +55,12 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
           get {
             val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
             complete(list)
+          } ~
+          post {
+            entity(as[Schueler]) { schueler =>
+              schuelerActor ? Create(schueler)
+              complete(OK)
+            }
           }
         } 
       }
