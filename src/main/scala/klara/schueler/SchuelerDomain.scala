@@ -4,8 +4,11 @@ import reactivemongo.bson._
 import reactivemongo.bson.handlers.{BSONReader,BSONWriter}
 import spray.json.DefaultJsonProtocol
 
+import klara.mongo.MongoJsonProtocol
+
+
 case class Schueler(
-  id: Option[String],
+  id: Option[BSONObjectID],
   name: String, 
   vorname: String
 )
@@ -17,10 +20,7 @@ object Schueler {
       val doc = document.toTraversable
 
       Schueler(
-        doc.getAs[BSONObjectID]("_id") match {
-          case Some(objectId) => Some(objectId.stringify)
-          case None => None
-        },
+        doc.getAs[BSONObjectID]("_id"),
         doc.getAs[BSONString]("name").get.value,
         doc.getAs[BSONString]("vorname").get.value
       )
@@ -30,10 +30,7 @@ object Schueler {
   implicit object BSONWriter extends BSONWriter[Schueler] {
     def toBSON(schueler: Schueler) = {
       BSONDocument(
-        "_id" -> (schueler.id match {
-          case Some(idString) => BSONObjectID(idString)
-          case None => BSONObjectID.generate
-        }),
+        "_id" -> schueler.id.getOrElse(BSONObjectID.generate),
         "name" -> BSONString(schueler.name),
         "vorname" -> BSONString(schueler.vorname)
       )
@@ -41,6 +38,7 @@ object Schueler {
   }
 }
 
-object SchuelerJsonProtocol extends DefaultJsonProtocol {
+object SchuelerJsonProtocol extends MongoJsonProtocol {
+
   implicit val schuelerFormat = jsonFormat3(Schueler.apply)
 }

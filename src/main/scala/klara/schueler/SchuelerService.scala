@@ -30,6 +30,8 @@ import klara.schueler.SchuelerJsonProtocol._
 
 import klara.auth.SessionCookieAuth
 
+import reactivemongo.core.commands.LastError
+
 
 // this trait defines our service behavior independently from the service actor
 trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLogging =>
@@ -58,8 +60,17 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
           } ~
           post {
             entity(as[Schueler]) { schueler =>
-              schuelerActor ? Create(schueler)
-              complete(OK)
+              if (schueler.id == "test") {
+                reject(ValidationRejection("no id is allowed when creating a new object"))
+              }
+              else {
+                val lastErrorFuture = (schuelerActor ? Create(schueler)).mapTo[LastError]
+                val result = lastErrorFuture map {
+                  case LastError(true, _, _, _, _) => HttpResponse(status=OK)
+                  case LastError(false, err, code, errMsg, _) => HttpResponse(OK).withEntity(HttpBody(`text/plain`,"test"))
+                }
+                complete(result)
+              }
             }
           }
         } 
