@@ -2,7 +2,6 @@ package klara.schueler
 
 import reactivemongo.bson._
 import reactivemongo.bson.handlers.{BSONReader,BSONWriter}
-import spray.json.DefaultJsonProtocol
 
 import klara.mongo.MongoJsonProtocol
 

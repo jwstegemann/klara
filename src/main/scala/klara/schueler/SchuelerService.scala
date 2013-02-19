@@ -32,7 +32,8 @@ import klara.auth.SessionCookieAuth
 
 import klara.system.Message
 import klara.system.Severities._
-import klara.system.Result
+
+import klara.utils.MessageHelper
 
 
 // this trait defines our service behavior independently from the service actor
@@ -40,7 +41,7 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
 
   val schuelerActor = actorRefFactory.actorFor("/user/schueler")
 
-  private implicit val timeout = new Timeout(2 seconds)
+  private implicit val timeout = new Timeout(5 seconds)
 
   //TODO: make this implicit in a trait?
   private val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
@@ -54,13 +55,16 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
 
   // TODO: externailze in BaseClass
   // TODO: implicit possible?
-  def mapToResponse(messages: Future[Result]) = {
-    log.info("IN MAPPING!!!!!!!!!!!")
+  def mapToResponse(messages: Future[List[Message]]) : Future[HttpResponse] = {
+    import klara.system.MessageJsonProtocol._
+
+    log.info("IN MAPPING!!!!!!!!!!!!! {}")
     messages map {
-      case Result(true, _) => HttpResponse(OK)
-      case Result(false, _) => {
+      case Nil => HttpResponse(OK)
+      case (message: Message) :: tail => {
         // Add Entity
-        HttpResponse(LoopDetected)
+        
+        HttpResponse(LoopDetected).withEntity(HttpBody(`application/json`,MessageHelper.serializeList(message :: Nil)))
       }
     }
   }
@@ -72,10 +76,13 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
           get {
             val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
             complete(list)
-          } ~
+          }
+        } ~
+        path("new") {
           post {
             entity(as[Schueler]) { schueler =>
-                complete(mapToResponse((schuelerActor ? Create(schueler)).mapTo[Result]))
+                log.error("BIN DA!!!!!!!!!!!!!!!!")
+                complete(mapToResponse((schuelerActor ? Create(schueler)).mapTo[List[Message]]))
             }
           }
         } 
