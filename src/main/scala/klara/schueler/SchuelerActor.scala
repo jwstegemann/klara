@@ -12,6 +12,16 @@ import language.postfixOps
 
 import klara.mongo.MongoUsingActor
 
+import klara.system.Message
+import klara.system.Severities._
+import klara.system.Result
+
+import scala.concurrent._
+
+import reactivemongo.core.commands.LastError
+
+import akka.pattern.ask
+
 
 case class FindAll()
 case class Create(item: Schueler)
@@ -46,12 +56,26 @@ class SchuelerActor extends MongoUsingActor {
     collection.find(query).toList pipeTo sender
   }
 
+  def mapLastError2Messages(lastError: Future[LastError]) : Future[Result]= {
+    log.info("IN RECOVER!!!!!!!!!!!")
+    lastError recover {
+      case LastError(_, err, code, errMsg, _) => Result(false, Message("A database error occured. Please inform your system-administrator.", "" + code + "errMsg", `ERROR`) :: Nil)
+    } map {
+      case LastError(true, _, _, _, _) => Result(true, Nil)
+    }
+  }
+
   def create(item: Schueler) = {
     log.debug("creating new Schueler '{}'", item)
 
-    implicit val writer = Schueler.BSONWriter
+    if (item.id != None) {
+      sender ! Result(false, (Message("no id is allowed when creating an object","",`ERROR`) :: Nil)) 
+    }
+    else {
+      implicit val writer = Schueler.BSONWriter
 
-    collection.insert(item) pipeTo sender
+      mapLastError2Messages(collection.insert(item)) pipeTo sender
+    }
   }
 
   def load(id: String) = {

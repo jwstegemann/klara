@@ -30,7 +30,9 @@ import klara.schueler.SchuelerJsonProtocol._
 
 import klara.auth.SessionCookieAuth
 
-import reactivemongo.core.commands.LastError
+import klara.system.Message
+import klara.system.Severities._
+import klara.system.Result
 
 
 // this trait defines our service behavior independently from the service actor
@@ -50,6 +52,19 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
   }
   */
 
+  // TODO: externailze in BaseClass
+  // TODO: implicit possible?
+  def mapToResponse(messages: Future[Result]) = {
+    log.info("IN MAPPING!!!!!!!!!!!")
+    messages map {
+      case Result(true, _) => HttpResponse(OK)
+      case Result(false, _) => {
+        // Add Entity
+        HttpResponse(LoopDetected)
+      }
+    }
+  }
+
   val schuelerRoute = {
     pathPrefix("schueler") {
       authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
@@ -60,17 +75,7 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
           } ~
           post {
             entity(as[Schueler]) { schueler =>
-              if (schueler.id == "test") {
-                reject(ValidationRejection("no id is allowed when creating a new object"))
-              }
-              else {
-                val lastErrorFuture = (schuelerActor ? Create(schueler)).mapTo[LastError]
-                val result = lastErrorFuture map {
-                  case LastError(true, _, _, _, _) => HttpResponse(status=OK)
-                  case LastError(false, err, code, errMsg, _) => HttpResponse(OK).withEntity(HttpBody(`text/plain`,"test"))
-                }
-                complete(result)
-              }
+                complete(mapToResponse((schuelerActor ? Create(schueler)).mapTo[Result]))
             }
           }
         } 
