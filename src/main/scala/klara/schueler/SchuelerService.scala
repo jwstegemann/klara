@@ -56,15 +56,10 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
   // TODO: externailze in BaseClass
   // TODO: implicit possible?
   def mapToResponse(messages: Future[List[Message]]) : Future[HttpResponse] = {
-    import klara.system.MessageJsonProtocol._
-
-    log.info("IN MAPPING!!!!!!!!!!!!! {}")
     messages map {
       case Nil => HttpResponse(OK)
-      case (message: Message) :: tail => {
-        // Add Entity
-        
-        HttpResponse(LoopDetected).withEntity(HttpBody(`application/json`,MessageHelper.serializeList(message :: Nil)))
+      case msg : List[Message] => {
+        HttpResponse(LoopDetected).withEntity(HttpBody(`application/json`,MessageHelper.serializeList(msg)))
       }
     }
   }
@@ -73,16 +68,15 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
     pathPrefix("schueler") {
       authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
         path("") {
-          get {
-            val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
-            complete(list)
-          }
-        } ~
-        path("new") {
           post {
             entity(as[Schueler]) { schueler =>
-                log.error("BIN DA!!!!!!!!!!!!!!!!")
-                complete(mapToResponse((schuelerActor ? Create(schueler)).mapTo[List[Message]]))
+              complete(mapToResponse((schuelerActor ? Create(schueler)).mapTo[List[Message]]))
+            }
+          } ~
+          get {
+            dynamic {
+              val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
+              complete(list)
             }
           }
         } 

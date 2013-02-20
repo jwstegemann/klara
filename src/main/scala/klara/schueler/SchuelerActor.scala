@@ -45,6 +45,7 @@ class SchuelerActor extends MongoUsingActor {
     case Delete(id) => delete(id)
   }
 
+  //FIXME: why is this called when url is create?
   def findAll() = {
     log.debug("finding all schueler")
 
@@ -55,13 +56,12 @@ class SchuelerActor extends MongoUsingActor {
     collection.find(query).toList pipeTo sender
   }
 
-  //is this possible as implicit?
+  //FIXME: is this possible as implicit?
   def mapLastError2Messages(lastError: Future[LastError]) : Future[List[Message]]= {
-    log.info("IN RECOVER!!!!!!!!!!!")
     lastError map {
       case LastError(true, _, _, _, _) => Nil
     } recover {
-      case LastError(_, err, code, errMsg, _) => Message("A database error occured. Please inform your system-administrator.", "", `ERROR`) :: Nil
+      case LastError(_, err, code, errMsg, _) => Message("A database error occured. Please inform your system-administrator.", err.getOrElse("no details available"), `ERROR`) :: Nil
     } 
   }
 
