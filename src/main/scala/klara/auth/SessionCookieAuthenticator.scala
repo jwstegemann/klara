@@ -45,6 +45,6 @@ class SessionCookieAuthenticator(sessionServiceActor : ActorRef)(implicit val ex
 }
 
 object SessionCookieAuth {
-  def apply(sessionServiceActor : ActorRef)(implicit ec : ExecutionContext): SessionCookieAuthenticator =
+  def apply()(implicit sessionServiceActor : ActorRef, ec : ExecutionContext): SessionCookieAuthenticator =
     new SessionCookieAuthenticator(sessionServiceActor)
 }

@@ -36,19 +36,11 @@ import spray.http.HttpHeaders._
 
 
 // this trait defines our service behavior independently from the service actor
-trait UserService extends HttpService with SprayJsonSupport { self : ActorLogging =>
+trait UserService extends HttpService with SprayJsonSupport with SessionAware { self : ActorLogging =>
 
-  private val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
   val userContextActor = actorRefFactory.actorFor("/user/userContext")
 
   private implicit val timeout = new Timeout(2 seconds)
-
-  /*
-  implicit val klaraRejectionHandler = RejectionHandler.fromPF {
-	case AuthenticationRequiredRejection(scheme, realm, params) :: _ =>
-		complete(Unauthorized, "Please login")
-  }
-  */
 
   val userRoute = {
     pathPrefix("user") {
@@ -72,7 +64,7 @@ trait UserService extends HttpService with SprayJsonSupport { self : ActorLoggin
         }
       } ~
         get {
-          authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
+          authenticate(SessionCookieAuth()) { userContext =>
             path("info") {
               log.info("Userinfo for " + userContext.username + " requested")
               complete(userContext);

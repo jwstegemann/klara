@@ -1,14 +1,10 @@
 package klara.schueler
 
-import spray.routing.{ HttpService, RequestContext }
-import spray.routing.directives.CachingDirectives
+import spray.http._
+import spray.routing._
 import spray.can.server.HttpServer
 import spray.util._
-import spray.http._
 import MediaTypes._
-import CachingDirectives._
-import spray.routing._
-import spray.http._
 import StatusCodes._
 import Directives._
 
@@ -27,30 +23,23 @@ import akka.pattern.ask
 import akka.actor.ActorLogging
 
 import klara.schueler.SchuelerJsonProtocol._
-
 import klara.auth.SessionCookieAuth
-
-import klara.system.Message
-import klara.system.Severities._
-
-import klara.services.MessageHandling
-
 import klara.system._
+import klara.services.{MessageHandling, SessionAware}
+
+
 
 
 // this trait defines our service behavior independently from the service actor
-trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling { self : ActorLogging =>
+trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling with SessionAware { self : ActorLogging =>
 
   val schuelerActor = actorRefFactory.actorFor("/user/schueler")
 
   private implicit val timeout = new Timeout(5 seconds)
 
-  //TODO: make this implicit in a trait?
-  private val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
-
   val schuelerRoute = {
     pathPrefix("schueler") {
-      authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>
+      authenticate(SessionCookieAuth()) { userContext =>
         path("") {
           post {
             entity(as[Schueler]) { schueler =>
