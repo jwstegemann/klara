@@ -4,6 +4,7 @@ version := "1.0"
 
 scalaVersion := "2.10.0"
 
+// "-optimise"
 scalacOptions ++= Seq( "-deprecation", "-unchecked", "-feature" )
 
 // use src/main/webapp
@@ -19,7 +20,8 @@ resolvers ++= Seq(
 	"spray.io" at "http://repo.spray.io",
 	"Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
     "sgodbillon" at "https://bitbucket.org/sgodbillon/repository/raw/master/snapshots/",
-    "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/maven-snapshots"
+    "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/maven-snapshots",
+    "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases"
 )
 
 // Libraries
@@ -41,7 +43,7 @@ libraryDependencies ++= Seq(
     "ch.qos.logback"                          %   "logback-classic"             % "1.0.9",
     "org.jvnet.mimepull"                      %   "mimepull"                    % "1.9.1",
     "org.pegdown"                             %   "pegdown"                     % "1.2.1",
-    "reactivemongo"                           %% "reactivemongo"                % "0.1-SNAPSHOT" cross CrossVersion.full,
+    "org.reactivemongo"                           %% "reactivemongo"                % "0.8",
     "joda-time"                               % "joda-time"                     % "2.1"
 )
 

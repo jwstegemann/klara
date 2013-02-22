@@ -33,11 +33,13 @@ import klara.auth.SessionCookieAuth
 import klara.system.Message
 import klara.system.Severities._
 
-import klara.utils.MessageHelper
+import klara.services.MessageHandling
+
+import klara.system._
 
 
 // this trait defines our service behavior independently from the service actor
-trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLogging =>
+trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling { self : ActorLogging =>
 
   val schuelerActor = actorRefFactory.actorFor("/user/schueler")
 
@@ -53,14 +55,13 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
   }
   */
 
-  // TODO: externailze in BaseClass
-  // TODO: implicit possible?
-  def mapToResponse(messages: Future[List[Message]]) : Future[HttpResponse] = {
-    messages map {
-      case Nil => HttpResponse(OK)
-      case msg : List[Message] => {
-        HttpResponse(LoopDetected).withEntity(HttpBody(`application/json`,MessageHelper.serializeList(msg)))
-      }
+  implicit val klaraExceptionHandler = ExceptionHandler.fromPF {
+    case InternalServerErrorException(messages) => complete(InternalServerError, messages)
+    case NotFoundException(message) => complete(NotFound, message)
+    case ValidationException(messages) => complete(PreconditionFailed, messages)
+    case t: Throwable => {
+      log.error(t, s"Unexpected error:")
+      complete(InternalServerError, Message("An unexpected Error occured. Please inform your system administrator.", `ERROR`))
     }
   }
 
@@ -70,16 +71,28 @@ trait SchuelerService extends HttpService with SprayJsonSupport { self : ActorLo
         path("") {
           post {
             entity(as[Schueler]) { schueler =>
-              complete(mapToResponse((schuelerActor ? Create(schueler)).mapTo[List[Message]]))
+              complete((schuelerActor ? Create(schueler)).mapTo[Inserted])
             }
           } ~
           get {
+            //TODO: is this necessary or is it enough to be called just once per change
             dynamic {
-              val list = (schuelerActor ? FindAll()).mapTo[List[Schueler]]
-              complete(list)
+              complete((schuelerActor ? FindAll()).mapTo[List[Schueler]])
             }
           }
-        } 
+        } ~ 
+        path(Rest) { id: String =>
+          get {
+            dynamic {
+              complete((schuelerActor ? Load(id)).mapTo[Schueler])
+            }
+          } ~
+          delete {
+            dynamic {
+              complete((schuelerActor ? Delete(id)).mapTo[Deleted])
+            }
+          }
+        }
       }
     }
   }

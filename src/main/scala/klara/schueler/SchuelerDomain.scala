@@ -5,6 +5,7 @@ import reactivemongo.bson.handlers.{BSONReader,BSONWriter}
 
 import klara.mongo.MongoJsonProtocol
 
+import klara.system.WithMessages
 
 case class Schueler(
   id: Option[BSONObjectID],
@@ -37,7 +38,7 @@ object Schueler {
   }
 }
 
-object SchuelerJsonProtocol extends MongoJsonProtocol {
+object SchuelerJsonProtocol extends MongoJsonProtocol with WithMessages {
 
   implicit val schuelerFormat = jsonFormat3(Schueler.apply)
 }
