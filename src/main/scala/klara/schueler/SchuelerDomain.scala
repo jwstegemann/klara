@@ -3,6 +3,7 @@ package klara.schueler
 import reactivemongo.bson._
 import reactivemongo.bson.handlers.{BSONReader,BSONWriter}
 
+import klara.mongo.Entity
 import klara.mongo.MongoJsonProtocol
 
 import klara.system.WithMessages
@@ -11,7 +12,8 @@ case class Schueler(
   id: Option[BSONObjectID],
   name: String, 
   vorname: String
-)
+) extends Entity
+
 
 object Schueler {
 
