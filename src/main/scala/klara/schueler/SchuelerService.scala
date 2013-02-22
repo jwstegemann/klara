@@ -91,6 +91,11 @@ trait SchuelerService extends HttpService with SprayJsonSupport with MessageHand
             dynamic {
               complete((schuelerActor ? Delete(id)).mapTo[Deleted])
             }
+          } ~
+          put {
+            entity(as[Schueler]) { schueler =>
+              complete((schuelerActor ? Update(schueler)).mapTo[Updated])
+            }
           }
         }
       }

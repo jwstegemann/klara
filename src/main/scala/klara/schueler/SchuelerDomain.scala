@@ -36,6 +36,7 @@ object Schueler {
       )
     }
   }
+
 }
 
 object SchuelerJsonProtocol extends MongoJsonProtocol with WithMessages {
