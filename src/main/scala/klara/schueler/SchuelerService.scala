@@ -48,23 +48,6 @@ trait SchuelerService extends HttpService with SprayJsonSupport with MessageHand
   //TODO: make this implicit in a trait?
   private val sessionServiceActor = actorRefFactory.actorFor("/user/sessionService")
 
-  /*
-  implicit val klaraRejectionHandler = RejectionHandler.fromPF {
-	case AuthenticationRequiredRejection(scheme, realm, params) :: _ =>
-		complete(Unauthorized, "Please login")
-  }
-  */
-
-  implicit val klaraExceptionHandler = ExceptionHandler.fromPF {
-    case InternalServerErrorException(messages) => complete(InternalServerError, messages)
-    case NotFoundException(message) => complete(NotFound, message)
-    case ValidationException(messages) => complete(PreconditionFailed, messages)
-    case t: Throwable => {
-      log.error(t, s"Unexpected error:")
-      complete(InternalServerError, Message("An unexpected Error occured. Please inform your system administrator.", `ERROR`))
-    }
-  }
-
   val schuelerRoute = {
     pathPrefix("schueler") {
       authenticate(SessionCookieAuth(sessionServiceActor)) { userContext =>

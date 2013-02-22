@@ -30,7 +30,7 @@ trait MongoUsingActor extends Actor with ActorLogging {
 
   log.info("creating connection to {}@{}", mongodbDb, mongodbUrl)
 
-  //TODO: is this correct and efficient
+  //TODO: is this correct and efficient?
   val defaultWriteConcern = GetLastError(true,None,false)
 
   /*
@@ -65,10 +65,21 @@ trait MongoUsingActor extends Actor with ActorLogging {
     }) pipeTo sender 
   }
 
+  /*
+   * fails future with a NotFound-exception when option is empty
+   */
   def answerWithOptionNotFound[T](item: Future[Option[T]], id: String) = {
     (item map {
       case Some(t) => t
       case None => throw NotFoundException(Message(s"id '$id' could not be found",`ERROR`))
     }) pipeTo sender
   }
+
+  /*
+   * replies with excetion as answer to sender
+   */
+  def answerWithException(ex: Exception) = {
+    Future.failed(ex) pipeTo sender
+  }
+
 }

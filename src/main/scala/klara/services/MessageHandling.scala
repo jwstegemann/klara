@@ -5,18 +5,31 @@ import StatusCodes._
 import MediaTypes._
 import spray.json._
 import spray.httpx.SprayJsonSupport
+import spray.routing._
 import spray.routing.Directives._
+
+import akka.actor.ActorLogging
 
 import klara.system.MessageJsonProtocol._
 import klara.system._
 import klara.system.Severities._
 
-import scala.concurrent.{Future, ExecutionContext}
-import akka.actor.Actor
 
-//import scala.language.implicitConversions
+trait MessageHandling { self: SprayJsonSupport with ActorLogging =>
+  /*
+  implicit val klaraRejectionHandler = RejectionHandler.fromPF {
+	case AuthenticationRequiredRejection(scheme, realm, params) :: _ =>
+		complete(Unauthorized, "Please login")
+  }
+  */
 
-
-trait MessageHandling { self: SprayJsonSupport =>
-
+  implicit val klaraExceptionHandler = ExceptionHandler.fromPF {
+    case InternalServerErrorException(messages) => complete(InternalServerError, messages)
+    case NotFoundException(message) => complete(NotFound, message)
+    case ValidationException(messages) => complete(PreconditionFailed, messages)
+    case t: Throwable => {
+      log.error(t, s"Unexpected error:")
+      complete(InternalServerError, Message("An unexpected Error occured. Please inform your system administrator.", `ERROR`))
+    }
+  }
 }

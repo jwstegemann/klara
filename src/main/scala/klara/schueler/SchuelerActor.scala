@@ -79,12 +79,9 @@ class SchuelerActor extends MongoUsingActor {
 
   def update(item: Schueler) = {
     log.debug("updating Schueler with id '{}'", item)
-    if (item.id.isEmpty) {
-      Future.failed(ValidationException(Message("id is required when updating an object", `ERROR`) :: Nil)) pipeTo sender
-    }
-    else {
-      val selector = BSONDocument("_id" -> item.id.get)
-      answerWithLastError(collection.update(selector,item,defaultWriteConcern,false,false), Updated(1))  
+    item.id match {
+      case None => answerWithException(ValidationException(Message("id is required when updating an object", `ERROR`) :: Nil))
+      case Some(id) => answerWithLastError(collection.update(BSONDocument("_id" -> item.id.get),item,defaultWriteConcern,false,false), Updated(1))  
     }
   }
 
