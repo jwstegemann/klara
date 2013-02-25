@@ -23,55 +23,21 @@ import akka.pattern.ask
 import akka.actor.ActorLogging
 
 import klara.schueler.SchuelerJsonProtocol._
-import klara.auth.SessionCookieAuth
+import klara.auth.{SessionCookieAuth, UserContext}
 import klara.system._
 import klara.services.{MessageHandling, SessionAware}
 
+import klara.services.EntityService
+import klara.entity._
 
 
 
 // this trait defines our service behavior independently from the service actor
-trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling with SessionAware { self : ActorLogging =>
+trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling { self : ActorLogging =>
 
   val schuelerActor = actorRefFactory.actorFor("/user/schueler")
 
-  private implicit val timeout = new Timeout(5 seconds)
+  val entityService = new EntityService[Schueler]("schueler", schuelerActor)
 
-  val schuelerRoute = {
-    pathPrefix("schueler") {
-      authenticate(SessionCookieAuth()) { userContext =>
-        path("") {
-          post {
-            entity(as[Schueler]) { schueler =>
-              complete((schuelerActor ? Create(schueler)).mapTo[Inserted])
-            }
-          } ~
-          get {
-            //TODO: is this necessary or is it enough to be called just once per change
-            dynamic {
-              complete((schuelerActor ? FindAll()).mapTo[List[Schueler]])
-            }
-          }
-        } ~ 
-        path(Rest) { id: String =>
-          get {
-            dynamic {
-              complete((schuelerActor ? Load(id)).mapTo[Schueler])
-            }
-          } ~
-          delete {
-            dynamic {
-              complete((schuelerActor ? Delete(id)).mapTo[Deleted])
-            }
-          } ~
-          put {
-            entity(as[Schueler]) { schueler =>
-              complete((schuelerActor ? Update(schueler)).mapTo[Updated])
-            }
-          }
-        }
-      }
-    }
-  }
-
+  def schuelerRoute(userContext: UserContext) = entityService.route(userContext)
 }

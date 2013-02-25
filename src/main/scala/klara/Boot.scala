@@ -4,6 +4,8 @@ import akka.actor.{Props, Actor, ActorLogging}
 import spray.can.server.SprayCanHttpServerApp
 import klara.services._
 
+import klara.auth.{SessionCookieAuth, UserContext}
+
 import klara.auth.SessionServiceActor
 import klara.auth.UserContextActor
 
@@ -11,12 +13,16 @@ import klara.schueler.SchuelerActor
 import klara.schueler.SchuelerService
 
 
-class RootServiceActor extends Actor with ActorLogging with SchuelerService with UserService with StaticService {
+class RootServiceActor extends Actor with ActorLogging with SchuelerService with UserService with StaticService with SessionAware{
 
   def actorRefFactory = context
 
   def receive = runRoute(
-    userRoute ~ schuelerRoute ~ staticRoute
+    userRoute ~ 
+    staticRoute~ 
+    authenticate(SessionCookieAuth()(sessionServiceActor, context.dispatcher)) { userContext => // make sessionServiceActor implicit again
+      schuelerRoute(userContext)
+    }
   )
 }
 

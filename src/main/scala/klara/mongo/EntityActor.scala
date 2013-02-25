@@ -15,6 +15,8 @@ import language.postfixOps
 import klara.system._
 import klara.system.Severities._
 
+import klara.entity._
+
 
 abstract class EntityActor[T <: Entity](val entityName: String, val collectionName: String, 
 	val bsonReader: BSONReader[T], val bsonWriter: BSONWriter[T]) extends MongoUsingActor {

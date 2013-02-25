@@ -3,7 +3,7 @@ package klara.schueler
 import reactivemongo.bson._
 import reactivemongo.bson.handlers.{BSONReader,BSONWriter}
 
-import klara.mongo.Entity
+import klara.entity.Entity
 import klara.mongo.MongoJsonProtocol
 
 import klara.system.WithMessages

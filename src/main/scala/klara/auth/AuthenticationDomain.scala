@@ -33,3 +33,4 @@ object KlaraAuthJsonProtocol extends DefaultJsonProtocol {
   implicit val UserContextFormat = jsonFormat5(UserContext.apply)
 }
 
+
