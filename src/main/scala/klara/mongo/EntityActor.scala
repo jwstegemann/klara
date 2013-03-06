@@ -9,6 +9,7 @@ import reactivemongo.bson.handlers.DefaultBSONHandlers.{DefaultBSONDocumentWrite
 import reactivemongo.bson.handlers.{BSONReader,BSONWriter}
 
 import scala.concurrent.Future
+import scala.reflect.ClassTag
 
 import language.postfixOps
 
@@ -17,24 +18,28 @@ import klara.system.Severities._
 
 import klara.entity._
 
-
-abstract class EntityActor[T <: Entity](val entityName: String, val collectionName: String, 
-	val bsonReader: BSONReader[T], val bsonWriter: BSONWriter[T]) extends MongoUsingActor {
+abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
+  (implicit val bsonReader: BSONReader[T], val bsonWriter: BSONWriter[T]) extends MongoUsingActor with LastErrorMapping {
 
   val collection = db(collectionName)
 
-  implicit val bsonReaderImplicit = bsonReader
-  implicit val bsonWriterImplicit = bsonWriter
+  def receive = {
+    case FindAll() => findAll()
+    case Create(item: T) => create(item)
+    case Load(id) => load(id)
+    case Update(item: T) => update(item)
+    case Delete(id) => delete(id)
+  }
 
   override def preStart =  {
-    log.info(s"$entityName actor started at: {}", self.path)
+    log.info(s"EntityActor for collection $collectionName started at: {}", self.path)
   }
 
   /*
    * find all items and send back the list to the sender
    */ 
   def findAll() = {
-    log.debug(s"finding all $entityName")
+    log.debug(s"finding all entites in $collectionName")
     collection.find(BSONDocument()).toList pipeTo sender
   }
 
@@ -42,13 +47,13 @@ abstract class EntityActor[T <: Entity](val entityName: String, val collectionNa
    * create a new item
    */
   def create(item: T) = {
-    log.debug(s"creating new $entityName '{}'", item)
+    log.debug(s"creating new entity in $collectionName '{}'", item)
 
     if (!item.id.isEmpty) {
-      Future.failed(ValidationException(Message("no id is allowed when creating an object", `ERROR`) :: Nil)) pipeTo sender
+      failWith(ValidationException(Message("no id is allowed when creating an object", `ERROR`) :: Nil))
     }
     else {
-      answerWithLastError(collection.insert(item), Inserted("not implemented yet"))
+      (collection.insert(item).recoverWithInternalServerError.mapToInserted("not yet implemented")) pipeTo sender
     }
   }
 
@@ -56,19 +61,23 @@ abstract class EntityActor[T <: Entity](val entityName: String, val collectionNa
    * load an item
    */
   def load(id: String) = {
-    log.debug(s"loading $entityName with id '{}'", id)
+    log.debug(s"loading item from $collectionName with id '{}'", id)
     val query = BSONDocument("_id" -> BSONObjectID(id))
-    answerWithOptionNotFound(collection.find(query).headOption, id)
+    failIfEmpty(collection.find(query).headOption, id)
   }
 
   /*
    * update an item
    */
   def update(item: T) = {
-    log.debug(s"updating $entityName with id '{}'", item)
-    item.id match {
-      case None => answerWithException(ValidationException(Message("id is required when updating an object", `ERROR`) :: Nil))
-      case Some(id) => answerWithLastError(collection.update(BSONDocument("_id" -> item.id.get),item,defaultWriteConcern,false,false), Updated(1))  
+    log.debug(s"updating entity in $collectionName with id '{}'", item)
+
+    if (item.id.isEmpty || item.version.isEmpty) {
+      failWith(ValidationException(Message("id is required when updating an object", `ERROR`) :: Nil))
+    }
+    else {
+      val query = BSONDocument("_id" -> item.id.get, "version" -> item.version.get)
+      (collection.update(query,item,defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
     }
   }
 
@@ -76,9 +85,9 @@ abstract class EntityActor[T <: Entity](val entityName: String, val collectionNa
    * delete an item
    */
   def delete(id: String) = {
-    log.debug(s"deleting $entityName with id '{}'", id)
+    log.debug(s"deleting entity from $collectionName with id '{}'", id)
     val query = BSONDocument("_id" -> BSONObjectID(id))    
-    answerWithLastError(collection.remove(query,defaultWriteConcern,true), Deleted(id))
+    (collection.remove(query,defaultWriteConcern,true).recoverWithInternalServerError.mapToDeleted(id)) pipeTo sender
   }
 	
 }

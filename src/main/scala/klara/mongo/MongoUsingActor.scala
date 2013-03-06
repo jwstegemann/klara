@@ -11,6 +11,7 @@ import reactivemongo.core.commands.GetLastError
 
 import klara.system._
 import klara.system.Severities._
+import klara.system.Implicits._
 
 
 trait MongoUsingActor extends Actor with ActorLogging {
@@ -34,41 +35,9 @@ trait MongoUsingActor extends Actor with ActorLogging {
   val defaultWriteConcern = GetLastError(true,None,false)
 
   /*
-   * converts a future instance of LastError returned by most mongo-operations into a list of messages
-   */
-  def answerWithLastError[T](lastError: Future[LastError], successValue: T) = {
-    (lastError map {
-      case LastError(true, _, _, _, _) => successValue
-    } recover {
-      case LastError(_, err, code, msg, doc) => {
-        log.error("mongoDB-Error: {}{}{}{}",err.getOrElse(""),
-          code match {
-            case Some(s : Int) => s" with code '$s'"
-            case None => ""
-          },
-          msg match {
-            case Some(s) => s" with message '$s'"
-            case None => ""
-          },
-          doc match {
-            case Some(doc) => {
-              val pretty = BSONDocument.pretty(doc)
-              s" in document '$pretty'"
-            }
-            case None => ""
-          }
-        )
-        throw InternalServerErrorException(
-          Message("A database error occured. Please inform your system-administrator.", `ERROR`, err.getOrElse("no details available")) :: Nil
-        )
-      }
-    }) pipeTo sender 
-  }
-
-  /*
    * fails future with a NotFound-exception when option is empty
    */
-  def answerWithOptionNotFound[T](item: Future[Option[T]], id: String) = {
+  def failIfEmpty[T](item: Future[Option[T]], id: String) = {
     (item map {
       case Some(t) => t
       case None => throw NotFoundException(Message(s"id '$id' could not be found",`ERROR`))
@@ -78,7 +47,7 @@ trait MongoUsingActor extends Actor with ActorLogging {
   /*
    * replies with excetion as answer to sender
    */
-  def answerWithException(ex: Exception) = {
+  def failWith(ex: Exception) = {
     Future.failed(ex) pipeTo sender
   }
 

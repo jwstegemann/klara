@@ -43,8 +43,10 @@ libraryDependencies ++= Seq(
     "ch.qos.logback"                          %   "logback-classic"             % "1.0.9",
     "org.jvnet.mimepull"                      %   "mimepull"                    % "1.9.1",
     "org.pegdown"                             %   "pegdown"                     % "1.2.1",
-    "org.reactivemongo"                           %% "reactivemongo"                % "0.8",
+    "org.reactivemongo"                       %% "reactivemongo"                % "0.8",
     "joda-time"                               % "joda-time"                     % "2.1"
+//    "org.scala-lang"                          % "scala-compiler"                % "2.10.0",
+//    "org.scala-lang"                          % "scalap"                        % "2.10.0"
 )
 
 

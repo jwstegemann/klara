@@ -38,12 +38,14 @@ import scala.reflect._
 import klara.entity.EntityJsonProtocol._
 
 
-//TODO: is Class as parameter more eficcient than ClassTag? Performance....
-class EntityService[T <: Entity: ClassTag](val prefix: String, val entityActor: ActorRef) {
+trait EntityService {
 
   private implicit val timeout = new Timeout(5 seconds)
 
-  def route(userContext: UserContext)(implicit marshaller: spray.httpx.marshalling.Marshaller[Future[T]],
+  protected val prefix: String
+  protected val entityActor: ActorRef
+
+  def route[T <: Entity: ClassTag](userContext: UserContext)(implicit marshaller: spray.httpx.marshalling.Marshaller[Future[T]],
   		listMarshaller: Marshaller[Future[List[T]]],
   		insMarsh: Marshaller[scala.concurrent.Future[Inserted]],
   		delMarsh: Marshaller[scala.concurrent.Future[Deleted]],

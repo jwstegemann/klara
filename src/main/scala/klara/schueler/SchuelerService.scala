@@ -1,31 +1,22 @@
 package klara.schueler
 
-import spray.http._
+//import spray.http._
 import spray.routing._
-import spray.can.server.HttpServer
-import spray.util._
-import MediaTypes._
-import StatusCodes._
-import Directives._
+//import spray.util._
+//import MediaTypes._
+//import StatusCodes._
+//import Directives._
 
-import spray.httpx.unmarshalling.pimpHttpEntity
 import spray.json._
 import spray.httpx.marshalling._
 import spray.httpx.SprayJsonSupport
 
-import scala.concurrent.duration._
-import scala.concurrent._
-import akka.util.Timeout
-
-import language.postfixOps
-
-import akka.pattern.ask
 import akka.actor.ActorLogging
 
 import klara.schueler.SchuelerJsonProtocol._
-import klara.auth.{SessionCookieAuth, UserContext}
+import klara.auth.UserContext
 import klara.system._
-import klara.services.{MessageHandling, SessionAware}
+import klara.services.MessageHandling
 
 import klara.services.EntityService
 import klara.entity._
@@ -33,11 +24,11 @@ import klara.entity._
 
 
 // this trait defines our service behavior independently from the service actor
-trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling { self : ActorLogging =>
+trait SchuelerService extends HttpService with SprayJsonSupport with MessageHandling with EntityService {self : ActorLogging =>
 
-  val schuelerActor = actorRefFactory.actorFor("/user/schueler")
+  override val entityActor = actorRefFactory.actorFor("/user/schueler")
+  override val prefix = "schueler"
 
-  val entityService = new EntityService[Schueler]("schueler", schuelerActor)
+  def schuelerRoute(userContext: UserContext) = route(userContext)
 
-  def schuelerRoute(userContext: UserContext) = entityService.route(userContext)
 }

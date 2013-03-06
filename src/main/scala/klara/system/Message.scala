@@ -20,7 +20,7 @@ object Severities {
 	val `FATAL` = "FATAL"
 }
 
-trait WithMessages { self: DefaultJsonProtocol => 
+trait MessageFormats { self: DefaultJsonProtocol => 
   implicit val severityFormat = jsonFormat1(Severity)
   implicit val messageFormat = jsonFormat4(Message.apply)	
 
@@ -29,5 +29,5 @@ trait WithMessages { self: DefaultJsonProtocol =>
   implicit val deletedFormat = jsonFormat1(Deleted)	
 }
 
-object MessageJsonProtocol extends DefaultJsonProtocol with WithMessages {
+object MessageJsonProtocol extends DefaultJsonProtocol with MessageFormats {
 }

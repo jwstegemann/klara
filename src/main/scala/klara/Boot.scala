@@ -13,14 +13,14 @@ import klara.schueler.SchuelerActor
 import klara.schueler.SchuelerService
 
 
-class RootServiceActor extends Actor with ActorLogging with SchuelerService with UserService with StaticService with SessionAware{
+class RootServiceActor extends Actor with ActorLogging with SchuelerService with UserService with StaticService with SessionAware {
 
   def actorRefFactory = context
 
   def receive = runRoute(
     userRoute ~ 
-    staticRoute~ 
-    authenticate(SessionCookieAuth()(sessionServiceActor, context.dispatcher)) { userContext => // make sessionServiceActor implicit again
+    staticRoute ~ 
+    authenticate(SessionCookieAuth()(sessionServiceActor, context.dispatcher)) { userContext => //FIXME: make sessionServiceActor implicit again
       schuelerRoute(userContext)
     }
   )

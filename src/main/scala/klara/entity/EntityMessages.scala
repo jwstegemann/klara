@@ -1,7 +1,7 @@
 package klara.entity
 
 /*
- * available message-types for this actor
+ * available message-types for entity-actors
  */
 case class FindAll()
 case class Create(item: Entity)
