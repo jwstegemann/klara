@@ -8,6 +8,8 @@ import klara.mongo.MongoJsonProtocol
 
 import klara.system.MessageFormats
 
+import reactivemongo.bson.Implicits._
+
 
 case class Schueler (
   id: Option[BSONObjectID],
@@ -15,10 +17,6 @@ case class Schueler (
   vorname: String,
   version: Option[BSONLong]
 ) extends Entity
-
-/** TODO - deal with non-case products by giving them _1 _2 etc. */
-class CaseClassReflector(root: Product) {
-}
 
 abstract class BSONConverter[T] {
   def toBSON(element: T): BSONValue
@@ -30,22 +28,41 @@ trait StandardConverters {
     def toBSON(element: String) = BSONString(element)
   }
 
-  implicit object OptionConverter extends BSONConverter[Option[Any]] {
-    def toBSON(element: Option[Any]) = BSONString(element.toString)
-  }  
+  implicit def BSONValueConverter[T <: BSONValue] = new BSONValueConverter[T]
+
+  class BSONValueConverter[T <: BSONValue] extends BSONConverter[T] {
+    def toBSON(element: T) = element
+  }
+
+  implicit def OptionConverter[T : BSONConverter] = new OptionConverter[T]
+
+  class OptionConverter[T : BSONConverter] extends BSONConverter[Option[T]] {
+
+    def convertInner[T](item: T)(implicit innerConverter: BSONConverter[T]) = innerConverter.toBSON(item)
+
+    def toBSON(element: Option[T]) = {
+      element match {
+        case Some(item) => convertInner(item)
+        //FIXME: would be better to do not even put this into the BSONDocument!
+        case None => BSONNull
+      }
+    }
+  }
+
 }
 
-class EntityWriter[T <: Entity] extends StandardConverters{
-
-  def writeElement[T](doc: AppendableBSONDocument, name: String, element: T)(implicit converter: BSONConverter[T]) = {
-  }
-
-  //TODO: cache List of writers instead of iterating here each time for performance reasons
-  def write(entity : T) : BSONDocument = {
-    val doc = BSONDocument().toAppendable
-    doc
-  }
-
+trait ProductConverters {
+    def productConverter4[A,B,C,D, T <: Product](construct: (A, B, C, D) => T,
+        a: String, b: String, c: String, d: String)(implicit ca: BSONConverter[A], cb: BSONConverter[B], cc: BSONConverter[C], cd: BSONConverter[D]): BSONConverter[T] =
+      new BSONConverter[T] {
+        def toBSON(element: T) = {
+          BSONDocument(a -> ca.toBSON(element.productElement(0).asInstanceOf[A]),
+            b -> cb.toBSON(element.productElement(1).asInstanceOf[B]),
+            c -> cc.toBSON(element.productElement(2).asInstanceOf[C]),
+            d -> cd.toBSON(element.productElement(3).asInstanceOf[D])
+          )
+        }
+      }
 }
 
 object Schueler {
@@ -63,12 +80,15 @@ object Schueler {
     }
   }
 
-  implicit object BSONWriter extends BSONWriter[Schueler] {
+  implicit object BSONWriter extends BSONWriter[Schueler] with StandardConverters with ProductConverters{
     def toBSON(schueler: Schueler) = {
+      //Macros.printFields[Schueler]
+      implicit def schuelerConverter = productConverter4(Schueler.apply,"_id","name","vorname","version")
 
-      //Macros.log(schueler)
-      Macros.printFields[Schueler]
+      val mySchueler = schueler.copy(id=Some(schueler.id.getOrElse(BSONObjectID.generate)), version=Some(BSONLong(System.currentTimeMillis)))
 
+      val doc: BSONDocument = schuelerConverter.toBSON(mySchueler).asInstanceOf[BSONDocument]
+      printf("MyDoc: " + BSONDocument.pretty(doc))
 
 //      val writer = new EntityWriter[Schueler]()
 //      writer.write(schueler)
