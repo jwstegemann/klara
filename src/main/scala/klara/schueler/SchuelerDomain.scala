@@ -18,6 +18,7 @@ case class Schueler (
   version: Option[BSONLong]
 ) extends Entity
 
+
 abstract class BSONConverter[T] {
   def toBSON(element: T): BSONValue
   //abstract def fromBSON(value: BSONValue): T
@@ -43,7 +44,6 @@ trait StandardConverters {
     def toBSON(element: Option[T]) = {
       element match {
         case Some(item) => convertInner(item)
-        //FIXME: would be better to do not even put this into the BSONDocument!
         case None => BSONNull
       }
     }
@@ -52,15 +52,33 @@ trait StandardConverters {
 }
 
 trait ProductConverters {
-    def productConverter4[A,B,C,D, T <: Product](construct: (A, B, C, D) => T,
-        a: String, b: String, c: String, d: String)(implicit ca: BSONConverter[A], cb: BSONConverter[B], cc: BSONConverter[C], cd: BSONConverter[D]): BSONConverter[T] =
+
+    // def appendValueToDoc[T](doc: AppendableBSONDocument, label: String, value: Option[T])(implicit converter: BSONConverter[T]) = {
+    //   if (!value.isEmpty) {
+    //     doc ++ (label -> converter.toBSON(value.get))
+    //   }
+    // }
+
+    def appendValueToDoc[T](doc: AppendableBSONDocument, label: String, value: T)(implicit converter: BSONConverter[T]) = {
+      converter.toBSON(value) match {
+        case BSONNull => doc
+        case convertedValue => doc.append(label -> convertedValue)
+      }
+    }
+
+
+//(implicit ca: BSONConverter[A], cb: BSONConverter[B], cc: BSONConverter[C], cd: BSONConverter[D])
+    def productConverter4[A :BSONConverter,B :BSONConverter,C :BSONConverter,D :BSONConverter, T <: Product](construct: (A, B, C, D) => T,
+        a: String, b: String, c: String, d: String): BSONConverter[T] =
       new BSONConverter[T] {
         def toBSON(element: T) = {
-          BSONDocument(a -> ca.toBSON(element.productElement(0).asInstanceOf[A]),
-            b -> cb.toBSON(element.productElement(1).asInstanceOf[B]),
-            c -> cc.toBSON(element.productElement(2).asInstanceOf[C]),
-            d -> cd.toBSON(element.productElement(3).asInstanceOf[D])
-          )
+          //FIXME: This has to become much nicer!
+          val doc = BSONDocument().toAppendable
+          val doc2 = appendValueToDoc(doc, a, element.productElement(0).asInstanceOf[A])
+          val doc3 = appendValueToDoc(doc2, b, element.productElement(1).asInstanceOf[B])
+          val doc4 = appendValueToDoc(doc3, c, element.productElement(2).asInstanceOf[C])
+          val doc5 = appendValueToDoc(doc4, d, element.productElement(3).asInstanceOf[D])
+          doc5
         }
       }
 }
@@ -85,9 +103,9 @@ object Schueler {
       //Macros.printFields[Schueler]
       implicit def schuelerConverter = productConverter4(Schueler.apply,"_id","name","vorname","version")
 
-      val mySchueler = schueler.copy(id=Some(schueler.id.getOrElse(BSONObjectID.generate)), version=Some(BSONLong(System.currentTimeMillis)))
+//      val mySchueler = schueler.copy(id=Some(schueler.id.getOrElse(BSONObjectID.generate)), version=Some(BSONLong(System.currentTimeMillis)))
 
-      val doc: BSONDocument = schuelerConverter.toBSON(mySchueler).asInstanceOf[BSONDocument]
+      val doc: BSONDocument = schuelerConverter.toBSON(schueler).asInstanceOf[BSONDocument]
       printf("MyDoc: " + BSONDocument.pretty(doc))
 
 //      val writer = new EntityWriter[Schueler]()
