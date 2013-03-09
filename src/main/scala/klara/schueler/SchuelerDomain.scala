@@ -19,6 +19,7 @@ case class Schueler (
 ) extends Entity
 
 
+
 abstract class BSONConverter[T] {
   def toBSON(element: T): BSONValue
   //abstract def fromBSON(value: BSONValue): T
@@ -37,13 +38,10 @@ trait StandardConverters {
 
   implicit def OptionConverter[T : BSONConverter] = new OptionConverter[T]
 
-  class OptionConverter[T : BSONConverter] extends BSONConverter[Option[T]] {
-
-    def convertInner[T](item: T)(implicit innerConverter: BSONConverter[T]) = innerConverter.toBSON(item)
-
+  class OptionConverter[T : BSONConverter](implicit innerConverter: BSONConverter[T]) extends BSONConverter[Option[T]] {
     def toBSON(element: Option[T]) = {
       element match {
-        case Some(item) => convertInner(item)
+        case Some(item) => innerConverter.toBSON(item)
         case None => BSONNull
       }
     }
@@ -53,34 +51,27 @@ trait StandardConverters {
 
 trait ProductConverters {
 
-    // def appendValueToDoc[T](doc: AppendableBSONDocument, label: String, value: Option[T])(implicit converter: BSONConverter[T]) = {
-    //   if (!value.isEmpty) {
-    //     doc ++ (label -> converter.toBSON(value.get))
-    //   }
-    // }
-
-    def appendValueToDoc[T](doc: AppendableBSONDocument, label: String, value: T)(implicit converter: BSONConverter[T]) = {
+  implicit class KlaraBSONDocument(doc: AppendableBSONDocument) {
+    def appendValue[T](label: String, value: T)(implicit converter: BSONConverter[T]) = {
       converter.toBSON(value) match {
         case BSONNull => doc
         case convertedValue => doc.append(label -> convertedValue)
       }
     }
+  }
 
-
-//(implicit ca: BSONConverter[A], cb: BSONConverter[B], cc: BSONConverter[C], cd: BSONConverter[D])
-    def productConverter4[A :BSONConverter,B :BSONConverter,C :BSONConverter,D :BSONConverter, T <: Product](construct: (A, B, C, D) => T,
-        a: String, b: String, c: String, d: String): BSONConverter[T] =
-      new BSONConverter[T] {
-        def toBSON(element: T) = {
-          //FIXME: This has to become much nicer!
-          val doc = BSONDocument().toAppendable
-          val doc2 = appendValueToDoc(doc, a, element.productElement(0).asInstanceOf[A])
-          val doc3 = appendValueToDoc(doc2, b, element.productElement(1).asInstanceOf[B])
-          val doc4 = appendValueToDoc(doc3, c, element.productElement(2).asInstanceOf[C])
-          val doc5 = appendValueToDoc(doc4, d, element.productElement(3).asInstanceOf[D])
-          doc5
-        }
+  def productConverter4[A :BSONConverter,B :BSONConverter,C :BSONConverter,D :BSONConverter, T <: Product](construct: (A, B, C, D) => T,
+      a: String, b: String, c: String, d: String): BSONConverter[T] =
+    new BSONConverter[T] {
+      def toBSON(element: T) = {
+        //FIXME: This has to become much nicer!
+        val doc : KlaraBSONDocument = BSONDocument().toAppendable
+        doc.appendValue(a, element.productElement(0).asInstanceOf[A])
+          .appendValue(b, element.productElement(1).asInstanceOf[B])
+          .appendValue(c, element.productElement(2).asInstanceOf[C])
+          .appendValue(d, element.productElement(3).asInstanceOf[D])
       }
+    }
 }
 
 object Schueler {

@@ -4,11 +4,23 @@
 		"selected_items":
 		[
 			[
-				"BSONO",
-				"BSONObjectID"
+				"BSON",
+				"BSONValueConverter"
 			],
 			[
-				"BSON",
+				"Entit",
+				"entityActor"
+			],
+			[
+				"collec",
+				"collectionName"
+			],
+			[
+				"BSONW",
+				"BSONWriter"
+			],
+			[
+				"BSONO",
 				"BSONObjectID"
 			],
 			[
@@ -116,58 +128,27 @@
 	"buffers":
 	[
 		{
-			"file": "curl/tests.txt",
+			"file": "src/main/scala/klara/mongo/MongoUsingActor.scala",
 			"settings":
 			{
-				"buffer_size": 721,
+				"buffer_size": 1432,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "build.sbt",
+			"file": "src/main/scala/klara/mongo/LastErrorUpdate.scala",
 			"settings":
 			{
-				"buffer_size": 2394,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/schueler/SchuelerActor.scala",
-			"settings":
-			{
-				"buffer_size": 2267,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/schueler/SchuelerService.scala",
-			"settings":
-			{
-				"buffer_size": 2617,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/system/Message.scala",
-			"settings":
-			{
-				"buffer_size": 544,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/utils/HandlingError.scala",
-			"settings":
-			{
-				"buffer_size": 299,
-				"line_ending": "Unix"
+				"buffer_size": 0,
+				"line_ending": "Unix",
+				"name": "package klara.mongo"
 			}
 		},
 		{
 			"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
 			"settings":
 			{
-				"buffer_size": 1003,
+				"buffer_size": 4127,
 				"line_ending": "Unix"
 			}
 		}
@@ -196,20 +177,39 @@
 	},
 	"file_history":
 	[
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/ReflectionUtils.scala",
+		"/home/tiberius/scala/projects/klara/build.sbt",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/Macros.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/EntityService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/AuthenticationDomain.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/SessionAware.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerDomain.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerActor.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Entity.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoJsonProtocol.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/Entity.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoUsingActor.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityActor.scala",
+		"/home/tiberius/scala/projects/klara/curl/schueler/load",
+		"/home/tiberius/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/EntityMessages.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityMessages.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/messages/EntityMessages.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/MessageHandling.scala",
+		"/home/tiberius/scala/projects/klara/curl/schueler/update",
+		"/home/tiberius/scala/projects/klara/curl/tests.txt",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/Message.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/utils/HandlingError.scala",
+		"/home/tiberius/scala/projects/klara/src/main/resources/logback.xml",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/UserContextActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/package.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerDomain.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoJsonProtocol.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerActor.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerService.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/utils/HandlingError.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/StaticService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/UsingMongo.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/AuthenticationDomain.scala",
 		"/home/tiberius/scala/projects/klara/mongoDB/create_scripts",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/index.html",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/css/klara.css",
@@ -223,9 +223,7 @@
 		"/home/tiberius/scala/projects/klara/src/main/resources/application.conf",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/controllers/login.js",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/directives.js",
-		"/home/tiberius/scala/projects/klara/src/main/resources/logback.xml",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/AuthenticationProtocoll.scala",
-		"/home/tiberius/scala/projects/klara/build.sbt",
 		"/home/tiberius/.config/sublime-text-2/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/MongoAuthenticator.scala",
 		"/home/tiberius/scala/projects/klara/snippets/routes.snippets",
@@ -262,12 +260,11 @@
 		"/home/tiberius/scala/projects/myMoney/project/build.properties",
 		"/home/tiberius/scala/projects/myMoney/src/main/resources/akka.conf",
 		"/home/tiberius/scala/projects/myMoney/src/main/webapp/transactions.html",
-		"/home/tiberius/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
 		"/home/tiberius/.gvfs/SFTP for ssh-822919-svbs on svbsev.de/kunden/184976_70794/rp-hosting/6321/7321/static/segeln.htm"
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 41.0
 	},
 	"find_in_files":
 	{
@@ -282,6 +279,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Load(",
+			"schueler",
+			"ec",
 			"=> ",
 			"AuthenticationConstants",
 			"AuthenticationConstants#",
@@ -323,36 +323,10 @@
 			[
 				{
 					"buffer": 0,
-					"file": "curl/tests.txt",
+					"file": "src/main/scala/klara/mongo/MongoUsingActor.scala",
 					"settings":
 					{
-						"buffer_size": 721,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								519,
-								519
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "build.sbt",
-					"settings":
-					{
-						"buffer_size": 2394,
+						"buffer_size": 1432,
 						"regions":
 						{
 						},
@@ -365,9 +339,36 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_size": 4,
+							"syntax": "Packages/Scala/Scala.tmLanguage",
+							"tab_size": 2,
 							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 177.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/main/scala/klara/mongo/LastErrorUpdate.scala",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "package klara.mongo",
+							"syntax": "Packages/Scala/Scala.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -377,126 +378,18 @@
 				},
 				{
 					"buffer": 2,
-					"file": "src/main/scala/klara/schueler/SchuelerActor.scala",
-					"settings":
-					{
-						"buffer_size": 2267,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1030,
-								1030
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 510.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/main/scala/klara/schueler/SchuelerService.scala",
-					"settings":
-					{
-						"buffer_size": 2617,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2323,
-								2323
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 525.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/main/scala/klara/system/Message.scala",
-					"settings":
-					{
-						"buffer_size": 544,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								544,
-								544
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/main/scala/klara/utils/HandlingError.scala",
-					"settings":
-					{
-						"buffer_size": 299,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								19,
-								19
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
 					"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
 					"settings":
 					{
-						"buffer_size": 1003,
+						"buffer_size": 4127,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								255,
-								255
+								1813,
+								1813
 							]
 						],
 						"settings":
@@ -506,7 +399,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 630.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
