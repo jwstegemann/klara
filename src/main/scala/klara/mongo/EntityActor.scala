@@ -49,11 +49,13 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
   def create(item: T) = {
     log.debug(s"creating new entity in $collectionName '{}'", item)
 
-    if (!item.id.isEmpty) {
+    if (!item._id.isEmpty) {
       failWith(ValidationException(Message("no id is allowed when creating an object", `ERROR`) :: Nil))
     }
     else {
-      (collection.insert(item).recoverWithInternalServerError.mapToInserted("not yet implemented")) pipeTo sender
+      item._id.generate
+      item.version.update
+      (collection.insert(item).recoverWithInternalServerError.mapToInserted(item._id.toString)) pipeTo sender
     }
   }
 
@@ -71,13 +73,14 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
    */
   def update(item: T) = {
     log.debug(s"updating entity in $collectionName with id '{}'", item)
-
-    if (item.id.isEmpty || item.version.isEmpty) {
-      failWith(ValidationException(Message("id is required when updating an object", `ERROR`) :: Nil))
+    
+    if (item._id.isEmpty || item.version.isEmpty) {
+      failWith(ValidationException(Message("id and version are required when updating an object", `ERROR`) :: Nil))
     }
     else {
-      val query = BSONDocument("_id" -> item.id.get, "version" -> item.version.get)
-      (collection.update(query,item,defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
+      val query = BSONDocument("_id" -> item._id.toBSON, "version" -> item.version.toBSON)
+      item.version.update
+      (collection.update(query, item, defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
     }
   }
 
