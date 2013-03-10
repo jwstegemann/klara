@@ -5,7 +5,6 @@ import scala.concurrent.duration._
 import scala.collection.concurrent.TrieMap
 
 import scala.concurrent.duration._
-import scala.compat.Platform
 
 import language.postfixOps
 
@@ -75,6 +74,6 @@ class SessionServiceActor extends Actor with ActorLogging {
     log.debug("done expring sessions leaving {} open...", sessions.size)
   }
 
-  def currentTime = Platform.currentTime / 1000
+  def currentTime = System.currentTimeMillis / 1000
 
 }

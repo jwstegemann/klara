@@ -26,8 +26,8 @@ import akka.util.Timeout
 
 import language.postfixOps
 
-import scala.compat.Platform
-import java.util.UUID
+import reactivemongo.utils.Converters
+import scala.util.Random
 
 import akka.pattern.ask
 import akka.actor.ActorLogging
@@ -74,6 +74,9 @@ trait UserService extends HttpService with SprayJsonSupport with SessionAware { 
     }
   }
 
-  def createSessionId(hostName: String) = new UUID(Platform.currentTime, hostName.hashCode).toString
+
+  val random = new Random(System.currentTimeMillis)
+//  def createSessionId(hostName: String) = new UUID(Platform.currentTime, hostName.hashCode).toString
+  def createSessionId(hostName: String) =  Converters.md5Hex(hostName + System.currentTimeMillis + random.nextString(4))
 
 }
