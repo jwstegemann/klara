@@ -7,8 +7,6 @@ import reactivemongo.bson._
 
 
 class MongoId(var id : BSONObjectID = null) {
-	def toBSON = id
-
 	def generate = {
 		id = BSONObjectID.generate
 	}
@@ -23,7 +21,7 @@ class MongoId(var id : BSONObjectID = null) {
 
 
 class MongoVersion(var version: Long = 0) {
-	def toBSON = BSONLong(version)
+	def asBSON = BSONLong(version)
 
 	def update = {
 		version = System.currentTimeMillis

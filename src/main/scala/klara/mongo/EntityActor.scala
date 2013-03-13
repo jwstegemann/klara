@@ -78,7 +78,7 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
       failWith(ValidationException(Message("id and version are required when updating an object", `ERROR`) :: Nil))
     }
     else {
-      val query = BSONDocument("_id" -> item._id.toBSON, "version" -> item.version.toBSON)
+      val query = BSONDocument("_id" -> item._id.id, "version" -> item.version.asBSON)
       item.version.update
       (collection.update(query, item, defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
     }

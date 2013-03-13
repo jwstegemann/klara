@@ -17,4 +17,10 @@ trait BSONProtocol[T <: Entity] {
   	}
   }
 
+	implicit object BSONReader extends BSONReader[T] {
+    def fromBSON(document: BSONDocument): T = {
+      entityConverter.fromBSON(document)
+    }
+  }
+
 }
