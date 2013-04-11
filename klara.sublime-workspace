@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"BSON",
+				"BSONValue"
+			],
+			[
 				"curr",
 				"currentTimeMillis"
 			],
@@ -14,10 +18,6 @@
 			[
 				"entit",
 				"entityConverter"
-			],
-			[
-				"BSON",
-				"BSONValueConverter"
 			],
 			[
 				"Entit",
@@ -143,59 +143,40 @@
 			"file": "src/main/scala/klara/mongo/bson/BSONConverter.scala",
 			"settings":
 			{
-				"buffer_size": 165,
+				"buffer_size": 163,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "package klara.schueler\n\nimport reactivemongo.bson._\nimport reactivemongo.bson.handlers.{BSONReader,BSONWriter}\n\nimport klara.entity._\nimport klara.mongo.MongoJsonProtocol\nimport klara.mongo.bson.{BSONProtocol, ProductConverters}\n\nimport klara.system.MessageFormats\n\n\ncase class Schueler (\n  _id: MongoId,\n  name: String, \n  vorname: String,\n  version: MongoVersion\n) extends Entity\n\nobject Schueler extends BSONProtocol[Schueler] with ProductConverters {\n\n  override def entityConverter = productConverter4(Schueler.apply)\n\n  \n}\n\nobject SchuelerJsonProtocol extends MongoJsonProtocol with MessageFormats {\n\n  implicit val schuelerFormat = jsonFormat4(Schueler.apply)\n}",
 			"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
-			"file_size": 1079,
-			"file_write_time": 1362868013000000,
 			"settings":
 			{
-				"buffer_size": 668,
+				"buffer_size": 665,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "package klara.mongo.bson\n\nimport reactivemongo.bson._\nimport reactivemongo.bson.handlers.{BSONReader,BSONWriter}\n\nimport klara.entity.Entity\n\n\ntrait BSONProtocol[T <: Entity] {\n\n	//FIXME: is this possible as implicit?\n	def entityConverter: BSONConverter[T]\n\n	implicit object BSONWriter extends BSONWriter[T] {\n    def toBSON(entity: T) = {\n      entityConverter.toBSON(entity).asInstanceOf[BSONDocument]\n  	}\n  }\n\n	implicit object BSONReader extends BSONReader[T] {\n    def fromBSON(document: BSONDocument): T = {\n      val doc = document.toTraversable\n\n      Schueler(\n        new MongoId(doc.getAs[BSONObjectID](\"_id\").get),\n        doc.getAs[BSONString](\"name\").get.value,\n        doc.getAs[BSONString](\"vorname\").get.value,\n        new MongoVersion(doc.getAs[BSONLong](\"version\").get.value)\n      )\n    }\n  }\n\n}",
 			"file": "src/main/scala/klara/mongo/bson/BSONProtocol.scala",
-			"file_size": 415,
-			"file_write_time": 1362828073000000,
 			"settings":
 			{
-				"buffer_size": 815,
+				"buffer_size": 567,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "package klara.mongo.bson\n\nimport reactivemongo.bson._\n\n\ntrait StandardConverters {\n  type BC[T] = BSONConverter[T]\n\n  implicit object StringConverter extends BSONConverter[String] {\n    def toBSON(element: String) = BSONString(element)\n    def fromBSON(value: BSONValue) = value match {\n      case v : BSONString => v.value\n      case _\n    }\n  }\n\n  implicit def BSONValueConverter[T <: BSONValue] = new BSONValueConverter[T]\n\n  class BSONValueConverter[T <: BSONValue] extends BSONConverter[T] {\n    def toBSON(element: T) = element\n  }\n\n  implicit def OptionConverter[T : BSONConverter] = new OptionConverter[T]\n\n  class OptionConverter[T : BSONConverter](implicit innerConverter: BSONConverter[T]) extends BSONConverter[Option[T]] {\n    def toBSON(element: Option[T]) = {\n      element match {\n        case Some(item) => innerConverter.toBSON(item)\n        case None => BSONNull\n      }\n    }\n  }\n\n}",
 			"file": "src/main/scala/klara/mongo/bson/StandardConverters.scala",
-			"file_size": 795,
-			"file_write_time": 1362826085000000,
 			"settings":
 			{
-				"buffer_size": 902,
+				"buffer_size": 1556,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "src/main/scala/klara/auth/SessionServiceActor.scala",
+			"file": "src/main/scala/klara/mongo/bson/ProductConverters.scala",
 			"settings":
 			{
-				"buffer_size": 2490,
+				"buffer_size": 3007,
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "Searching 149 files for \"createSession\"\n\n/home/tiberius/scala/projects/klara/klara.sublime-workspace:\n   70  			[\n   71  				\"createS\",\n   72: 				\"createSessionId\"\n   73  			],\n   74  			[\n   ..\n   78  			[\n   79  				\"cre\",\n   80: 				\"createSessionMsg\"\n   81  			],\n   82  			[\n\n/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala:\n   14  case class IsSessionValidMsg(sessionId : String, host : String)\n   15  \n   16: case class CreateSessionMsg(sid : String, userContext : UserContext, hostName : String)\n   17  \n   18  case class ExpireSessionsMsg()\n   ..\n   49    def receive = {\n   50      case IsSessionValidMsg(sessionId, host) => isSessionValid(sessionId, host)\n   51:     case CreateSessionMsg(sid, userContext, hostName) => createSession(sid, userContext, hostName)\n   52      case ExpireSessionsMsg() => expireSessions()\n   53    }\n   ..\n   64    }\n   65  \n   66:   def createSession(sid : String, userContext : UserContext, hostName : String) = {\n   67      sessions += (sid -> Session(sid, userContext, hostName, currentTime))\n   68      log.info(\"created session '{}' for user '{}'\", sid, userContext.username)\n\n/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala:\n   52                val result = future map {\n   53                  case Some(userContext : UserContext) => {\n   54:                   val sid = createSessionId(hostName)\n   55:                   sessionServiceActor ! CreateSessionMsg(sid, userContext, hostName)\n   56                    val cookie = HttpCookie(SESSION_COOKIE_NAME, sid, path = Some(\"/\"), maxAge = Some(3600))\n   57                    HttpResponse(status=OK,headers=`Set-Cookie`(cookie) :: Nil)\n   ..\n   75    }\n   76  \n   77:   def createSessionId(hostName: String) = new UUID(Platform.currentTime, hostName.hashCode).toString\n   78  \n   79  }\n\n9 matches across 3 files\n",
-			"settings":
-			{
-				"buffer_size": 1889,
-				"line_ending": "Unix",
-				"name": "Find Results",
-				"scratch": true
 			}
 		},
 		{
@@ -203,6 +184,38 @@
 			"settings":
 			{
 				"buffer_size": 2531,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/scala/klara/mongo/EntityActor.scala",
+			"settings":
+			{
+				"buffer_size": 2810,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/scala/klara/entity/Entity.scala",
+			"settings":
+			{
+				"buffer_size": 938,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/scala/klara/services/EntityService.scala",
+			"settings":
+			{
+				"buffer_size": 2126,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "curl/schueler/update",
+			"settings":
+			{
+				"buffer_size": 216,
 				"line_ending": "Unix"
 			}
 		}
@@ -231,6 +244,8 @@
 	},
 	"file_history":
 	[
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoJsonProtocol.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerDomain.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONProtocol.scala",
@@ -254,7 +269,6 @@
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/SessionAware.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/Entity.scala",
@@ -269,7 +283,6 @@
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/utils/HandlingError.scala",
 		"/home/tiberius/scala/projects/klara/src/main/resources/logback.xml",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/UserContextActor.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/package.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/StaticService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/UsingMongo.scala",
@@ -331,7 +344,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 90.0,
+		"height": 0.0,
 		"where_history":
 		[
 			""
@@ -385,7 +398,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 9,
 			"sheets":
 			[
 				{
@@ -393,15 +406,15 @@
 					"file": "src/main/scala/klara/mongo/bson/BSONConverter.scala",
 					"settings":
 					{
-						"buffer_size": 165,
+						"buffer_size": 163,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								129,
-								129
+								0,
+								0
 							]
 						],
 						"settings":
@@ -419,15 +432,15 @@
 					"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
 					"settings":
 					{
-						"buffer_size": 668,
+						"buffer_size": 665,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								526,
-								526
+								523,
+								523
 							]
 						],
 						"settings":
@@ -447,20 +460,22 @@
 					"file": "src/main/scala/klara/mongo/bson/BSONProtocol.scala",
 					"settings":
 					{
-						"buffer_size": 815,
+						"buffer_size": 567,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								544,
-								544
+								177,
+								177
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
+							"syntax": "Packages/Scala/Scala.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -473,15 +488,15 @@
 					"file": "src/main/scala/klara/mongo/bson/StandardConverters.scala",
 					"settings":
 					{
-						"buffer_size": 902,
+						"buffer_size": 1556,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								273,
-								273
+								608,
+								608
 							]
 						],
 						"settings":
@@ -498,18 +513,18 @@
 				},
 				{
 					"buffer": 4,
-					"file": "src/main/scala/klara/auth/SessionServiceActor.scala",
+					"file": "src/main/scala/klara/mongo/bson/ProductConverters.scala",
 					"settings":
 					{
-						"buffer_size": 2490,
+						"buffer_size": 3007,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								154,
-								154
+								841,
+								841
 							]
 						],
 						"settings":
@@ -519,88 +534,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 360.0,
+						"translation.y": 90.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 5,
-					"settings":
-					{
-						"buffer_size": 1889,
-						"regions":
-						{
-							"match":
-							{
-								"flags": 112,
-								"regions":
-								[
-									[
-										148,
-										161
-									],
-									[
-										238,
-										251
-									],
-									[
-										468,
-										481
-									],
-									[
-										724,
-										737
-									],
-									[
-										772,
-										785
-									],
-									[
-										919,
-										932
-									],
-									[
-										1396,
-										1409
-									],
-									[
-										1469,
-										1482
-									],
-									[
-										1751,
-										1764
-									]
-								],
-								"scope": ""
-							}
-						},
-						"selection":
-						[
-							[
-								1403,
-								1403
-							]
-						],
-						"settings":
-						{
-							"detect_indentation": false,
-							"output_tag": 1,
-							"result_base_dir": "",
-							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
-							"result_line_regex": "^ +([0-9]+):",
-							"scroll_past_end": true,
-							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
 					"file": "src/main/scala/klara/services/UserService.scala",
 					"settings":
 					{
@@ -611,8 +551,8 @@
 						"selection":
 						[
 							[
-								2271,
-								2271
+								0,
+								0
 							]
 						],
 						"settings":
@@ -622,7 +562,113 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 315.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/main/scala/klara/mongo/EntityActor.scala",
+					"settings":
+					{
+						"buffer_size": 2810,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1829,
+								1829
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 585.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/main/scala/klara/entity/Entity.scala",
+					"settings":
+					{
+						"buffer_size": 938,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								413,
+								413
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/main/scala/klara/services/EntityService.scala",
+					"settings":
+					{
+						"buffer_size": 2126,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1769,
+								1769
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 540.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "curl/schueler/update",
+					"settings":
+					{
+						"buffer_size": 216,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								214,
+								214
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
+						},
+						"translation.x": 515.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

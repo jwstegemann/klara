@@ -9,6 +9,12 @@ import klara.mongo.bson.{BSONProtocol, ProductConverters}
 
 import klara.system.MessageFormats
 
+/*object Schulform extends KeyDictionary {
+   val gymnasium = Value("gymnasium", "Gymnasium", "Gymnasium")
+   val realschule = Value("realschule", "Realschule", "Realschule")
+   val hauptschule = Value("hauptschule", "Hauptschule", "Hauptschule")
+   val grundschule = Value("grundschule", "Grundschule", "Grundschule")
+}*/
 
 case class Schueler (
   _id: MongoId,

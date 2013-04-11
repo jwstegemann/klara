@@ -1,6 +1,5 @@
 package klara.mongo
 
-import spray.json.DefaultJsonProtocol
 import spray.json._
 import klara.entity._
 
