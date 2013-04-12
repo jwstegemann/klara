@@ -18,38 +18,39 @@ import klara.system.Severities._
  */
 case class GetValues(dictionary : String)
 
-case class Register(name: String, dictionary : Dictionary)
 
+object DictionaryRegistry {
+
+  val dictionaries = new HashMap[String, Dictionary]
+
+  def register(name: String, dictionary : Dictionary) = {
+    dictionaries += (name -> dictionary)
+  }
+
+  def size = dictionaries.size
+}
 
 /*
  * DictionaryServicActor
  */
 class DictionaryServiceActor extends Actor with ActorLogging with Failable {
 
-  val dictionaries = new HashMap[String, Dictionary]
 
   override def preStart =  {
-    log.info("DictionaryServiceActor started at: {}", self.path)
-
-    import klara.schueler.Schulform
-
-    register("Schulform", Schulform)
+    log.info("DictionaryServiceActor started at: {} with {} dictionaries registered", self.path, DictionaryRegistry.size)
   }
 
   def receive = {
     case GetValues(dictionary) => getValues(dictionary)
-    case Register(name, dictionary) => register(name, dictionary)
   }
 
   def getValues(dictionary: String) = {
-    log.info("Dict: {}", dictionary)
-    dictionaries.get(dictionary) match {
+    //log.info("Dict: {}", dictionary)
+    DictionaryRegistry.dictionaries.get(dictionary) match {
       case Some(dict) => sender ! dict.values
       case None => failWith(NotFoundException(Message(s"no dictionary named '$dictionary' registered", `ERROR`) :: Nil))
     }
   }
 
-  def register(name: String, dictionary : Dictionary) = {
-    dictionaries += (name -> dictionary)
-  }
+  
 }

@@ -9,7 +9,7 @@ import klara.mongo.bson.{BSONProtocol, ProductConverters}
 
 import klara.system.{MessageFormats, Dictionary}
 
-object Schulform extends Dictionary {
+object Schulform extends Dictionary("Schulform") {
   type Schulform = Value
   val Grundschule = create("grundschule", "Grundschule", "Grundschule")
   val Hauptschule = create("hauptschule", "Hauptschule", "Hauptschule")
@@ -17,7 +17,7 @@ object Schulform extends Dictionary {
   val Gymnasium = create("gymnasium", "Gymnasium", "Gymnasium")
 }
 
-object Geschlecht extends Dictionary {
+object Geschlecht extends Dictionary("Geschlecht") {
   type Geschlecht = Value
   val maennlich = create("m","männlich","männlich")
   val weiblich = create("f","weiblich","weiblich")

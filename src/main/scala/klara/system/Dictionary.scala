@@ -14,7 +14,9 @@ object DictionaryJsonProtocol extends DefaultJsonProtocol {
   implicit val keyValueFormat = jsonFormat3(KeyValue.apply)
 }
 
-abstract class Dictionary() extends DefaultJsonProtocol {
+abstract class Dictionary(val name: String) extends DefaultJsonProtocol {
+
+  DictionaryRegistry.register(name, this)
 
 	/*
 	 * JSON-format for dictionarie-values
