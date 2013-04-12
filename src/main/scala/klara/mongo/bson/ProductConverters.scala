@@ -11,6 +11,7 @@ import klara.system._
 
 trait ProductConverters extends StandardConverters {
 
+  //FIXME: move this to entity
   implicit object MongoIdConverter extends BSONConverter[MongoId] {
     def toBSON(element: MongoId) = element.id
     def fromBSON(value: BSONValue) = value match {
@@ -51,6 +52,16 @@ trait ProductConverters extends StandardConverters {
         fieldNames(3))
   }
 
+  def productConverter5[A :BSONConverter,B :BSONConverter,C :BSONConverter,D :BSONConverter,E :BSONConverter, T <: Product : TypeTag](construct: (A, B, C, D, E) => T): BSONConverter[T] = {
+      val fieldNames = ReflectionUtils.getFieldNames[T]
+      productConverter5WithNames(construct,
+        fieldNames(0),
+        fieldNames(1),
+        fieldNames(2),
+        fieldNames(3),
+        fieldNames(4))
+  }
+
   def productConverter4WithNames[A :BSONConverter,B :BSONConverter,C :BSONConverter,D :BSONConverter, T <: Product](construct: (A, B, C, D) => T,
       a: String, b: String, c: String, d: String): BSONConverter[T] =
     new BSONConverter[T] {
@@ -70,6 +81,33 @@ trait ProductConverters extends StandardConverters {
             doc.readValue[B](b),
             doc.readValue[C](c),
             doc.readValue[D](d)
+          )
+        }
+        case x =>  throw BSONDeserializationError("Expected BSONDocument to deserialize to Product but found " + x.getClass)
+      }
+    }
+
+  def productConverter5WithNames[A :BSONConverter,B :BSONConverter,C :BSONConverter,D :BSONConverter,E :BSONConverter, T <: Product](construct: (A, B, C, D, E) => T,
+      a: String, b: String, c: String, d: String, e: String): BSONConverter[T] =
+    new BSONConverter[T] {
+      def toBSON(element: T) = {
+        val doc : KlaraAppendableBSONDocument = BSONDocument().toAppendable
+        doc.appendValue(a, element.productElement(0).asInstanceOf[A])
+          .appendValue(b, element.productElement(1).asInstanceOf[B])
+          .appendValue(c, element.productElement(2).asInstanceOf[C])
+          .appendValue(d, element.productElement(3).asInstanceOf[D])
+          .appendValue(e, element.productElement(4).asInstanceOf[E])
+      }
+
+      def fromBSON(value : BSONValue) = value match {
+        case document : BSONDocument => {
+          val doc :  KlaraTraversableBSONDocument = document.toTraversable
+          construct(
+            doc.readValue[A](a),
+            doc.readValue[B](b),
+            doc.readValue[C](c),
+            doc.readValue[D](d),
+            doc.readValue[E](e)
           )
         }
         case x =>  throw BSONDeserializationError("Expected BSONDocument to deserialize to Product but found " + x.getClass)

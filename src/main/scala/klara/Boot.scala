@@ -8,6 +8,7 @@ import klara.auth.{SessionCookieAuth, UserContext}
 
 import klara.auth.SessionServiceActor
 import klara.auth.UserContextActor
+import klara.system.DictionaryServiceActor
 
 import klara.schueler.SchuelerActor
 import klara.schueler.SchuelerService
@@ -33,9 +34,18 @@ object Boot extends App with SprayCanHttpServerApp {
   val sessionService = system.actorOf(Props[SessionServiceActor], "sessionService")	
   // create and start the userContext service
   val userContext = system.actorOf(Props[UserContextActor], "userContext")  
+  // create and start the dictironary service
+  val dictionaryService = system.actorOf(Props[DictionaryServiceActor], "dictionaryService")  
+
+  /*
+   * Domain Actors 
+   */  
   // create and start the schueler service
   val schueler = system.actorOf(Props[SchuelerActor], "schueler")  
 
+  /*
+   * Web Actors
+   */
   // create and start our routing service actors
   val rootService = system.actorOf(Props[RootServiceActor], "root-service")
 

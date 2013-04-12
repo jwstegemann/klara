@@ -14,11 +14,8 @@ import klara.system.Severities._
 import klara.system.Implicits._
 
 
-trait MongoUsingActor extends Actor with ActorLogging {
+trait MongoUsingActor extends Actor with ActorLogging with Failable {
 
-  // provide ExecutionContext
-  implicit val ec = context.dispatcher
-  
   // get DB-settings from config-file
   val config = context.system.settings.config
 
@@ -42,13 +39,6 @@ trait MongoUsingActor extends Actor with ActorLogging {
       case Some(t) => t
       case None => throw NotFoundException(Message(s"id '$id' could not be found",`ERROR`))
     }) pipeTo sender
-  }
-
-  /*
-   * replies with excetion as answer to sender
-   */
-  def failWith(ex: Exception) = {
-    Future.failed(ex) pipeTo sender
   }
 
 }

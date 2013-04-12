@@ -30,6 +30,8 @@ import spray.http.HttpHeaders._
 
 import klara.system._
 
+import klara.system.DictionaryJsonProtocol._
+
 //import klara.system.DictionaryJsonProtocol._
 
 /*object Schulform extends KeyDictionary {
@@ -42,14 +44,18 @@ import klara.system._
 // this trait defines our service behavior independently from the service actor
 trait DictionaryService extends HttpService with SprayJsonSupport with SessionAware { self : ActorLogging =>
 
-//  val userContextActor = actorRefFactory.actorFor("//userContext")
+  val dictionaryServiceActor = actorRefFactory.actorFor("/user/dictionaryService")
 
   private implicit val timeout = new Timeout(2 seconds)
 
   val dictionaryRoute = {
     pathPrefix("dict") {
-//          log.info("getting dictionary for " + dictionary)
-          complete(Schulform.Grundschule)
+      get {
+        path(Rest) { dict: String =>
+            val values = (dictionaryServiceActor ? GetValues(dict)).mapTo[Iterable[KeyValue]]
+            complete(values)
+        }
+      }
     }
   }
 }
