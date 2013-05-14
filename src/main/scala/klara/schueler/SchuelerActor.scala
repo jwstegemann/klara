@@ -18,12 +18,10 @@ class SchuelerActor extends EntityActor[Schueler]("schueler") {
     case Test(msg) => log.debug(msg)
   }
 
-  def isValid(schueler: Schueler) {
-  	checkName(schueler.name)
-  }
+  override def defaultChecks = checkName _ :: Nil
 
-  def checkName(name: String) = {
-  	if (!name.startsWith("Ca")) throw new ValidationException(Message("ungueltiger Name",`ERROR`,"Der Name muss mit Ca beginnen.",Some("name")) :: Nil)
+  def checkName(schueler: Schueler): Validation[Schueler].Result = {
+  	if (name.startsWith("Ca")) Right(schueler)
   }
 
 }

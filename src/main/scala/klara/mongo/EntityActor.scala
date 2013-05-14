@@ -14,8 +14,6 @@ import scala.reflect.ClassTag
 import language.postfixOps
 
 import klara.system._
-import klara.system.Severities._
-
 import klara.entity._
 
 abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
@@ -41,30 +39,6 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
   def findAll() = {
     log.debug(s"finding all entites in $collectionName")
     collection.find(BSONDocument()).toList pipeTo sender
-  }
-
-  /*
-   * checks if no id is present
-   */
-  def hasNoId(item: T): Either[Message,T] = {
-    if (item._id.isEmpty) Right(item)
-    else Left(Message("no id is allowed when creating an object", `ERROR`))
-  }
-
-  /*
-   * checks if no id is present
-   */
-  def hasId(item: T): Either[Message,T] = {
-    if (!item._id.isEmpty) Right(item)
-    else Left(Message("id required when updating an object", `ERROR`))
-  }
-
-  /*
-   * checks if no id is present
-   */
-  def hasVersion(item: T): Either[Message,T] = {
-    if (!item.version.isEmpty) Right(item)
-    else Left(Message("version required when updating an object", `ERROR`))
   }
 
   /*
