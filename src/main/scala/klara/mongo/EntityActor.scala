@@ -19,7 +19,7 @@ import klara.system.Severities._
 import klara.entity._
 
 abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
-  (implicit val bsonReader: BSONReader[T], val bsonWriter: BSONWriter[T]) extends MongoUsingActor with LastErrorMapping {
+  (implicit val bsonReader: BSONReader[T], val bsonWriter: BSONWriter[T]) extends MongoUsingActor with LastErrorMapping with Validation[T] {
 
   val collection = db(collectionName)
 
@@ -44,19 +44,40 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
   }
 
   /*
+   * checks if no id is present
+   */
+  def hasNoId(item: T): Either[Message,T] = {
+    if (item._id.isEmpty) Right(item)
+    else Left(Message("no id is allowed when creating an object", `ERROR`))
+  }
+
+  /*
+   * checks if no id is present
+   */
+  def hasId(item: T): Either[Message,T] = {
+    if (!item._id.isEmpty) Right(item)
+    else Left(Message("id required when updating an object", `ERROR`))
+  }
+
+  /*
+   * checks if no id is present
+   */
+  def hasVersion(item: T): Either[Message,T] = {
+    if (!item.version.isEmpty) Right(item)
+    else Left(Message("version required when updating an object", `ERROR`))
+  }
+
+  /*
    * create a new item
    */
   def create(item: T) = {
     log.debug(s"creating new entity in $collectionName '{}'", item)
 
-    if (!item._id.isEmpty) {
-      failWith(ValidationException(Message("no id is allowed when creating an object", `ERROR`) :: Nil))
-    }
-    else {
-      item._id.generate
-      item.version.update
-      (collection.insert(item).recoverWithInternalServerError.mapToInserted(item._id.toString)) pipeTo sender
-    }
+    validate(item, hasNoId _ :: Nil)
+
+    item._id.generate
+    item.version.update
+    (collection.insert(item).recoverWithInternalServerError.mapToInserted(item._id.toString)) pipeTo sender
   }
 
   /*
@@ -74,14 +95,11 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
   def update(item: T) = {
     log.debug(s"updating entity in $collectionName with id '{}'", item)
     
-    if (item._id.isEmpty || item.version.isEmpty) {
-      failWith(ValidationException(Message("id and version are required when updating an object", `ERROR`) :: Nil))
-    }
-    else {
-      val query = BSONDocument("_id" -> item._id.id, "version" -> item.version.asBSON)
-      item.version.update
-      (collection.update(query, item, defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
-    }
+    validate(item, hasId _ :: hasVersion _ :: Nil)
+    
+    val query = BSONDocument("_id" -> item._id.id, "version" -> item.version.asBSON)
+    item.version.update
+    (collection.update(query, item, defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
   }
 
   /*

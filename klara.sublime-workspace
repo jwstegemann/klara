@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"Dic",
+				"DictionaryRegistry"
+			],
+			[
+				"dictiona",
+				"dictionaries"
+			],
+			[
 				"BSON",
 				"BSONValue"
 			],
@@ -139,86 +147,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "src/main/scala/klara/mongo/bson/BSONConverter.scala",
-			"settings":
-			{
-				"buffer_size": 163,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
-			"settings":
-			{
-				"buffer_size": 665,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/mongo/bson/BSONProtocol.scala",
-			"settings":
-			{
-				"buffer_size": 567,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/mongo/bson/StandardConverters.scala",
-			"settings":
-			{
-				"buffer_size": 1556,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/mongo/bson/ProductConverters.scala",
-			"settings":
-			{
-				"buffer_size": 3007,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/services/UserService.scala",
-			"settings":
-			{
-				"buffer_size": 2531,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/mongo/EntityActor.scala",
-			"settings":
-			{
-				"buffer_size": 2810,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/entity/Entity.scala",
-			"settings":
-			{
-				"buffer_size": 938,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/services/EntityService.scala",
-			"settings":
-			{
-				"buffer_size": 2126,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "curl/schueler/update",
-			"settings":
-			{
-				"buffer_size": 216,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -244,28 +172,30 @@
 	},
 	"file_history":
 	[
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityActor.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/DictionaryServiceActor.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerDomain.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/Dictionary.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONConverter.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONProtocol.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/StandardConverters.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/ProductConverters.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Entity.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/EntityService.scala",
+		"/home/tiberius/scala/projects/klara/curl/schueler/update",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoJsonProtocol.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerDomain.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONProtocol.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityActor.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Entity.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/AuthenticationDomain.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/ProductConverters.scala",
 		"/home/tiberius/scala/projects/klara/curl/schueler/create",
 		"/home/tiberius/scala/projects/klara/curl/schueler/create_with_id",
 		"/home/tiberius/scala/projects/klara/curl/schueler/delete",
-		"/home/tiberius/scala/projects/klara/curl/schueler/update",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoUsingActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/LastErrorUpdate.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONConverter.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/StandardConverters.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/utils/ReflectionUtils.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/ReflectionUtils.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/Macros.scala",
 		"/home/tiberius/scala/projects/klara/build.sbt",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/EntityService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
@@ -398,281 +328,8 @@
 	"groups":
 	[
 		{
-			"selected": 9,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "src/main/scala/klara/mongo/bson/BSONConverter.scala",
-					"settings":
-					{
-						"buffer_size": 163,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
-					"settings":
-					{
-						"buffer_size": 665,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								523,
-								523
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/main/scala/klara/mongo/bson/BSONProtocol.scala",
-					"settings":
-					{
-						"buffer_size": 567,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								177,
-								177
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/main/scala/klara/mongo/bson/StandardConverters.scala",
-					"settings":
-					{
-						"buffer_size": 1556,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								608,
-								608
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/main/scala/klara/mongo/bson/ProductConverters.scala",
-					"settings":
-					{
-						"buffer_size": 3007,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								841,
-								841
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 90.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/main/scala/klara/services/UserService.scala",
-					"settings":
-					{
-						"buffer_size": 2531,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "src/main/scala/klara/mongo/EntityActor.scala",
-					"settings":
-					{
-						"buffer_size": 2810,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1829,
-								1829
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 585.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "src/main/scala/klara/entity/Entity.scala",
-					"settings":
-					{
-						"buffer_size": 938,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								413,
-								413
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "src/main/scala/klara/services/EntityService.scala",
-					"settings":
-					{
-						"buffer_size": 2126,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1769,
-								1769
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 540.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "curl/schueler/update",
-					"settings":
-					{
-						"buffer_size": 216,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								214,
-								214
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
-						},
-						"translation.x": 515.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],
