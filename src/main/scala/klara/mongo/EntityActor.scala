@@ -15,8 +15,9 @@ import language.postfixOps
 
 import klara.system._
 import klara.entity._
+import klara.entity.validation._
 
-abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
+abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String, validator: EntityValidator[T])
   (implicit val bsonReader: BSONReader[T], val bsonWriter: BSONWriter[T]) extends MongoUsingActor with LastErrorMapping with Validation[T] {
 
   val collection = db(collectionName)
@@ -47,11 +48,11 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
   def create(item: T) = {
     log.debug(s"creating new entity in $collectionName '{}'", item)
 
-    validate(item, hasNoId _ :: Nil)
-
-    item._id.generate
-    item.version.update
-    (collection.insert(item).recoverWithInternalServerError.mapToInserted(item._id.toString)) pipeTo sender
+    if (validate(item, hasNoId _ :: validator.checks())) {
+      item._id.generate
+      item.version.update
+      (collection.insert(item).recoverWithInternalServerError.mapToInserted(item._id.toString)) pipeTo sender
+    }
   }
 
   /*
@@ -69,11 +70,11 @@ abstract class EntityActor[T <: Entity: ClassTag](val collectionName: String)
   def update(item: T) = {
     log.debug(s"updating entity in $collectionName with id '{}'", item)
     
-    validate(item, hasId _ :: hasVersion _ :: Nil)
-    
-    val query = BSONDocument("_id" -> item._id.id, "version" -> item.version.asBSON)
-    item.version.update
-    (collection.update(query, item, defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
+    if (validate(item, hasId _ :: hasVersion _ :: validator.checks())) {
+      val query = BSONDocument("_id" -> item._id.id, "version" -> item.version.asBSON)
+      item.version.update
+      (collection.update(query, item, defaultWriteConcern,false,false).recoverWithInternalServerError.mapToUpdated) pipeTo sender
+    }
   }
 
   /*

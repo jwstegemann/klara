@@ -1,3 +1,61 @@
-<div class="span12 pagination-centered" style="margin-top: 100px">
-<img src="img/logo_big.png" />
+<div class="span12" ng-init="init()">
+
+    <ul class="breadcrumb">
+        <li><a href="#">Klara</a> <span class="divider">/</span></li>
+        <li><a href="#/schueler">Schüler</a> <span class="divider">/</span></li>
+    </ul>
+
+
+    <div class="page-header">
+        <h1>Schüler-Liste</h1>
+    </div>
+
+
+    
+    <table id="schuelerTable" class="table table-condensed table-bordered table-hover table-striped">
+    	<thead>
+            <tr>
+                <th colspan="4" class="toolbar">
+                    <form class="form-search pull-left">
+                        <div class="input-append">
+                            <input type="text" class="search-query input-large" placeholder="Filter" ng-model="schuelerTable.filter">
+                            <button class="btn"><i class="icon-search icon-large" /></button>
+                        </div>
+                    </form>
+
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <a class="btn" href="#/schueler/create"><i class="icon-plus-sign icon-large" /></a>
+                            <button class="btn"><i class="icon-trash icon-large" /></button>
+                        </div>
+                        <div class="btn-group pull-right">
+                            <button class="btn" ng-click="reload()"><i class="icon-refresh icon-large" /></button>
+                        </div>
+                        <div class="btn-group pull-right">
+                            <button class="btn"><i class="icon-cog icon-large" /></button>
+                        </div>
+                    </div>
+            </th>
+    		<tr>
+                <th class="select"><input type="checkbox" id="select_all"></td></th>
+    			<th ng-click="sort('name')">Name <i ng-show="schuelerTable.predicate == 'name'" ng-class="schuelerTable.reverse?'icon-angle-up':'icon-angle-down'" /></th>
+    			<th ng-click="sort('vorname')">Vorname  <i ng-show="schuelerTable.predicate == 'vorname'" ng-class="schuelerTable.reverse?'icon-angle-up':'icon-angle-down'" /></th>
+    			<th ng-click="sort('geschlecht')">Geschlecht  <i ng-show="schuelerTable.predicate == 'geschlecht'" ng-class="schuelerTable.reverse?'icon-angle-up':'icon-angle-down'" /></th>
+    		</tr>
+    	</thead>
+    	<tbody>
+	  		<tr ng-repeat="schueler in schuelerList | filter: schuelerTable.filter | orderBy:schuelerTable.predicate:schuelerTable.reverse" ng-class="{selected: schueler.selected}">
+                <td class="select"><input type="checkbox" id="{{schueler._id}}" ng-model="schueler.selected" ng-change="select(schueler)" /></td>
+	  			<td><a href="#schueler/detail/{{schueler._id}}">{{schueler.name}}</a></td>
+	  			<td>{{schueler.vorname}}</td>
+	  			<td>{{schueler.geschlecht}}</td>
+	  		</tr>
+  		</tbody>
+    </table>
+
+
+    <ul>
+        <li>Test</li>
+        <li ng-repeat="schueler in schuelerList | filter: {'selected': true}">{{schueler.name}}</li>
+    </ul>
 </div>

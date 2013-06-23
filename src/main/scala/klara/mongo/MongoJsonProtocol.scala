@@ -8,7 +8,7 @@ import reactivemongo.bson.{BSONObjectID, BSONLong}
 /*
  * Allows to serialize objects using special mongo-types to JSON and back
  */
-class MongoJsonProtocol extends DefaultJsonProtocol {
+trait MongoJsonProtocol extends DefaultJsonProtocol {
 
   implicit object MongoIdFormat extends RootJsonFormat[MongoId] {
     def write(e: MongoId) = JsString(e.toString)

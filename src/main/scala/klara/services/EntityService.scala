@@ -25,7 +25,6 @@ import language.postfixOps
 import akka.pattern.ask
 import akka.actor.ActorLogging
 
-import klara.schueler.SchuelerJsonProtocol._
 import klara.auth.{SessionCookieAuth, UserContext}
 import klara.system._
 

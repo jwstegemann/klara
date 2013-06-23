@@ -1,43 +1,70 @@
-<div class="span3">
-  <div class="well sidebar-nav">
-    <ul class="nav nav-list">
-      <li class="nav-header">Sidebar</li>
-      <li class="active"><a href="#">Link</a></li>
-      <li><a href="#/schueler"><i class="icon-book"></i> Schüler</a></li>
-      <li><a href="#/schuelerDetail/12345">Schüler-Detail</a></li>
-      <li><a href="#">Link</a></li>
-      <li class="nav-header">Sidebar</li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li class="nav-header">Sidebar</li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-    </ul>
-  </div><!--/.well -->
-</div><!--/span-->
+<div class="span3 well">
+  <ul class="nav nav-list">
+  	<li class="nav-header">Daten</li>
+		<li class="active"><a href="#overview"><i class="icon-chevron-right"></i> Persönliche Daten</a></li>
+		<li class="">Eltern</li>
+		<li class="">Schule</li>
+  	<li class="nav-header">Informationen</li>
+		<li class="">Eltern</li>
+		<li class="">Schule</li>
+	</ul>
+</div>
 
-<div class="span9">
+<div class="span9" ng-init="init()">
 
-<p>Bin ich schuelerDetail: {{schueler.name}}</p>
-<p>id: {{schueler.id}}</p>
+	<ul class="breadcrumb">
+    <li><a href="#">Klara</a> <span class="divider">/</span></li>
+    <li><a href="#/schueler">Schüler</a> <span class="divider">/</span></li>
+    <li class="active">{{schueler._id}}</li>
+  </ul>
 
-<h3>Enter some data and submit to send and access protected data.</h3>
-        <form ng-submit="restrictedAction()">
-          Enter restricted data:
-          <input type="text" ng-model="restrictedData">
-          <input type="submit" value="Submit"></input>
-        </form>
 
-<p>username: {{user.username}}</p>
-<p>user-info: {{user.info}}</p>
-<p>user-info: {{user.firstName}}</p>
-<p>user-info: {{user.lastName}}</p>
-<p>user-info: {{user.permissions}}</p>
-  
-</div><!--/span-->
+	<div class="page-header">
+   	<h1>{{schueler.vorname}} {{schueler.name}}</h1>
+  </div>
+	
+	<!-- Validation Results -->
+	<div class="alert alert-error" ng-repeat="msg in validation.errors">
+		<strong>{{msg.text}}</strong>&nbsp;<span>{{msg.severity}}</span>
+	</div>
 
+	<form class="form-horizontal">
+
+		<div class="control-group">
+			<label class="control-label" for="inputId">id</label>
+			<div class="controls">
+				<input class="uneditable-input" type="text" id="inputId" ng-model="schueler._id" />
+			</div>
+		</div>
+
+		<div id="name" class="control-group">
+			<label class="control-label" for="inputName">Name</label>
+			<div class="controls">
+				<input type="text" id="inputName" ng-model="schueler.name" />
+				<span class="help-inline validationResult"></span>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="inputVorname">Vorname</label>
+			<div class="controls">
+				<input type="text" id="inputVorname" ng-model="schueler.vorname" />
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="inputGeschlecht">Geschlecht</label>
+			<div class="controls">
+				<input type="text" id="inputGeschlecht" ng-model="schueler.geschlecht" />
+			</div>
+		</div>
+
+
+    <div class="form-actions">
+    	<button type="submit" class="btn btn-primary" ng-click="save()"><i class="icon-save icon-white" /> speichern</button>
+    	<button type="button" class="btn" ng-click="goToList()"><i class="icon-list" /> zurück</button>
+    </div>
+	
+	</form>
+
+</div>

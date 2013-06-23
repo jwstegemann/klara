@@ -23,6 +23,7 @@ object DictionaryRegistry {
 
   val dictionaries = new HashMap[String, Dictionary]
 
+  //FIXME: throw fatal exception if dictionary is already present!
   def register(name: String, dictionary : Dictionary) = {
     dictionaries += (name -> dictionary)
   }

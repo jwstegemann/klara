@@ -22,5 +22,4 @@ trait BSONProtocol[T <: Entity] {
       entityConverter.fromBSON(document)
     }
   }
-
 }

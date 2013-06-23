@@ -6,7 +6,8 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
       when('/schueler', {templateUrl: 'partials/schuelerList.html', controller: SchuelerListCtrl}).
-      when('/schuelerDetail/:schuelerId', {templateUrl: 'partials/schuelerDetail.html', controller: SchuelerDetailCtrl}).
+      when('/schueler/create', {templateUrl: 'partials/schuelerDetail.html', controller: SchuelerDetailCtrl}).
+      when('/schueler/detail/:schuelerId', {templateUrl: 'partials/schuelerDetail.html', controller: SchuelerDetailCtrl}).
       otherwise({redirectTo: '/schueler'});
   }]).run(['$rootScope', function($rootScope) {
   

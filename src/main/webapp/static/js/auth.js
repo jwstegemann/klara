@@ -67,6 +67,7 @@ angular.module('http-auth-interceptor', [])
         }
         // otherwise
         return $q.reject(response);
+
       }
 
       return function(promise) {

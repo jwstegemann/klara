@@ -13,7 +13,8 @@ import spray.httpx.SprayJsonSupport
 
 import akka.actor.ActorLogging
 
-import klara.schueler.SchuelerJsonProtocol._
+// import klara.schueler.SchuelerJsonProtocol._
+import klara.schueler.Schueler._
 import klara.auth.UserContext
 import klara.system._
 import klara.services.MessageHandling
