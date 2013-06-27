@@ -53,9 +53,9 @@
 		</div>
 
 		<div class="control-group">
-			<label class="control-label" for="inputGeschlecht">Geschlecht</label>
+			<label class="control-label" for="selectGeschlecht">Geschlecht</label>
 			<div class="controls">
-				<input type="text" id="inputGeschlecht" ng-model="schueler.geschlecht" />
+				<select id="selectGeschlecht" class="span2" bs-select ng-model="schueler.geschlecht" ng-options="key as label for (key, label) in geschlecht"></select>
 			</div>
 		</div>
 

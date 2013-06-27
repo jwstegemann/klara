@@ -148,64 +148,27 @@
 	"buffers":
 	[
 		{
-			"file": "src/main/scala/klara/Boot.scala",
+			"file": "src/main/webapp/static/js/app.js",
 			"settings":
 			{
-				"buffer_size": 1741,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/mongo/EntityActor.scala",
-			"settings":
-			{
-				"buffer_size": 2529,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/entity/Entity.scala",
-			"settings":
-			{
-				"buffer_size": 939,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/entity/Validation.scala",
-			"settings":
-			{
-				"buffer_size": 1113,
+				"buffer_size": 2214,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "package klara.schueler\n\nimport reactivemongo.bson._\nimport reactivemongo.bson.handlers.{BSONReader,BSONWriter}\n\nimport klara.entity._\nimport klara.mongo.MongoJsonProtocol\nimport klara.mongo.bson.{BSONProtocol, ProductConverters}\n\nimport klara.system.{MessageFormats, Dictionary}\n\nobject Schulform extends Dictionary(\"Schulform\") {\n  type Schulform = Value\n  val Grundschule = create(\"grundschule\", \"Grundschule\", \"Grundschule\")\n  val Hauptschule = create(\"hauptschule\", \"Hauptschule\", \"Hauptschule\")\n  val Realschule = create(\"realschule\", \"Realschule\", \"Realschule\")\n  val Gymnasium = create(\"gymnasium\", \"Gymnasium\", \"Gymnasium\")\n}\n\nobject Geschlecht extends Dictionary(\"Geschlecht\") {\n  type Geschlecht = Value\n  val maennlich = create(\"m\",\"männlich\",\"männlich\")\n  val weiblich = create(\"f\",\"weiblich\",\"weiblich\")\n}\n\nimport Geschlecht._\n\ncase class Schueler (\n  _id: MongoId,\n  name: String, \n  vorname: String,\n  geschlecht: Geschlecht,\n  version: MongoVersion\n) extends Entity\n\nobject Schueler extends BSONProtocol[Schueler] with ProductConverters {\n\n  override def entityConverter = productConverter5(Schueler.apply)\n\n  def checkName\n\n}\n\nobject SchuelerJsonProtocol extends MongoJsonProtocol with MessageFormats {\n\n  implicit val schuelerFormat = jsonFormat5(Schueler.apply)\n}",
-			"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
-			"file_size": 1267,
-			"file_write_time": 1368564915000000,
+			"file": "src/main/webapp/static/js/controllers/schueler.js",
 			"settings":
 			{
-				"buffer_size": 1282,
-				"line_ending": "Unix"
+				"buffer_size": 4663,
+				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "Searching 158 files for \"startsWith\"\n\n/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerActor.scala:\n   24  \n   25    def checkName(name: String) = {\n   26:   	if (!name.startsWith(\"Ca\")) throw new ValidationException(Message(\"ungueltiger Name\",`ERROR`,\"Der Name muss mit Ca beginnen.\",Some(\"name\")) :: Nil)\n   27    }\n   28  \n\n1 match in 1 file\n",
+			"file": "src/main/webapp/static/partials/schuelerDetail.html",
 			"settings":
 			{
-				"buffer_size": 370,
-				"line_ending": "Unix",
-				"name": "Find Results",
-				"scratch": true
-			}
-		},
-		{
-			"file": "src/main/scala/klara/schueler/SchuelerActor.scala",
-			"settings":
-			{
-				"buffer_size": 527,
-				"line_ending": "Unix"
+				"buffer_size": 2352,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -233,17 +196,20 @@
 	},
 	"file_history":
 	[
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/DictionaryService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityActor.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/DictionaryServiceActor.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Entity.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Validation.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerDomain.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerActor.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/DictionaryService.scala",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/DictionaryServiceActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/Dictionary.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONConverter.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/BSONProtocol.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/StandardConverters.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/bson/ProductConverters.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/UserService.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Entity.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/EntityService.scala",
 		"/home/tiberius/scala/projects/klara/curl/schueler/update",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala",
@@ -259,10 +225,8 @@
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/Macros.scala",
 		"/home/tiberius/scala/projects/klara/build.sbt",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerService.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionCookieAuthenticator.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/SessionAware.scala",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/schueler/SchuelerActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/Entity.scala",
 		"/home/tiberius/scala/projects/klara/curl/schueler/load",
 		"/home/tiberius/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
@@ -336,7 +300,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 90.0,
+		"height": 0.0,
 		"where_history":
 		[
 			""
@@ -391,211 +355,87 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/main/scala/klara/Boot.scala",
+					"file": "src/main/webapp/static/js/app.js",
 					"settings":
 					{
-						"buffer_size": 1741,
+						"buffer_size": 2214,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								1800,
+								1800
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 270.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "src/main/scala/klara/mongo/EntityActor.scala",
+					"file": "src/main/webapp/static/js/controllers/schueler.js",
 					"settings":
 					{
-						"buffer_size": 2529,
+						"buffer_size": 4663,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								401,
-								401
+								4340,
+								4340
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2070.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "src/main/scala/klara/entity/Entity.scala",
+					"file": "src/main/webapp/static/partials/schuelerDetail.html",
 					"settings":
 					{
-						"buffer_size": 939,
+						"buffer_size": 2352,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								939,
-								939
+								1909,
+								1909
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/HTML/HTML.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/main/scala/klara/entity/Validation.scala",
-					"settings":
-					{
-						"buffer_size": 1113,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								323,
-								323
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/main/scala/klara/schueler/SchuelerDomain.scala",
-					"settings":
-					{
-						"buffer_size": 1282,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1139,
-								1139
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"settings":
-					{
-						"buffer_size": 370,
-						"regions":
-						{
-							"match":
-							{
-								"flags": 112,
-								"regions":
-								[
-									[
-										194,
-										204
-									]
-								],
-								"scope": ""
-							}
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"detect_indentation": false,
-							"output_tag": 1,
-							"result_base_dir": "",
-							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
-							"result_line_regex": "^ +([0-9]+):",
-							"scroll_past_end": true,
-							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "src/main/scala/klara/schueler/SchuelerActor.scala",
-					"settings":
-					{
-						"buffer_size": 527,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								520,
-								520
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 360.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

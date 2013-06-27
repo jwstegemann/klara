@@ -11,22 +11,44 @@ body {
 	margin-left: 20px;
 }
 
-.table thead th.toolbar {
+.table thead tr th.toolbar {
 	padding: 5px;
 	background-color: #f5f5f5;
 	vertical-align: middle;
 }
 
-.table thead th.toolbar .form-search {
+.table thead tr th.toolbar .form-search {
 	margin: 0px;
 }
 
-.select {
+.table thead tr th {
+	padding-right: 0px;
+}
+
+.table tbody tr td.select, .table thead tr th.select {
 	width: 20px;
 	max-width: 20px;
 	text-align: center;
+	vertical-align: middle;
 }
 
 .table tbody tr.selected td {
-	background-color: yellow;
+	background-color: rgb(252, 248, 227);
+}
+
+.table-striped tbody tr:nth-child(2n+1).selected td {
+    background-color: rgb(246, 242, 222);
+}
+
+.table-hover tbody tr:hover.selected td {
+	 background-color: rgb(245, 245, 245);
+}
+
+table thead tr th .sizehandler {
+	float: right;
+	height: 100%;
+  cursor: col-resize;
+	margin-right: 0px;
+	width: 5px;
+	min-width: 5px;
 }
