@@ -5,6 +5,20 @@
 var requests = 0;
 var loaderTimeout;
 
+function showBusy() {
+  if (requests++ == 0) {
+    loaderTimeout = setTimeout("$('#busy').show()",300);
+  }
+}
+
+function hideBusy() {
+  if (--requests <= 0) {
+    requests = 0;
+    clearTimeout(loaderTimeout);
+    $("#busy").hide();
+  }
+}
+
 angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor','$strap.directives']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
@@ -15,23 +29,7 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
   }]).config(function ($httpProvider) {
       $httpProvider.responseInterceptors.push('msgHttpInterceptor');
       var spinnerFunction = function (data, headersGetter) {
-          //$("#busy").show();
-
-/*          $.blockUI({ css: { 
-            border: 'none', 
-            padding: '15px', 
-            backgroundColor: '#000', 
-            '-webkit-border-radius': '10px', 
-            '-moz-border-radius': '10px', 
-            opacity: .5, 
-            color: '#fff' 
-        } }); 
-*/
-          if (requests++ == 0) {
-            console.log("start " + requests);
-            loaderTimeout = setTimeout("$('#busy').show()",300);
-          }
-
+          showBusy();
           return data;
       };
       $httpProvider.defaults.transformRequest.push(spinnerFunction);
@@ -146,13 +144,7 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
   }).factory('msgHttpInterceptor', function ($q, $window, message) {
     return function (promise) {
       return promise.then(function (response) {
-        //$('#mydiv').hide();
-        if (--requests <= 0) {
-          requests = 0;
-          console.log("stop success");
-          clearTimeout(loaderTimeout);
-          $("#busy").hide();
-        }
+        hideBusy();
         return response;
       }, function (response) {
         var contentType = response.headers("Content-Type");
@@ -173,13 +165,7 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
           message.fatal("in der Kommunikation mit dem Server: " + response.data, response.status);
         }
        
-        //$('#mydiv').hide();
-        if (--requests <= 0) {
-          requests = 0;
-          console.log("stop error");
-          clearTimeout(loaderTimeout);
-          $("#busy").hide();
-        }
+        hideBusy();
         return $q.reject(response);
       });
     };

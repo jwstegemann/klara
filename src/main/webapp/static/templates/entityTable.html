@@ -1,0 +1,36 @@
+<table class="table table-condensed table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th colspan="{{colspan}}" class="toolbar">
+                <form class="form-search pull-left">
+                    <div class="input-append">
+                        <input type="text" class="search-query input-large" placeholder="Filter" ng-model="filterValue">
+                        <button class="btn"><i class="icon-search icon-large" /></button>
+                    </div>
+                </form>
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <a class="btn" href="{{createLink}}"><i class="icon-plus-sign icon-large" /></a>
+                        <button class="btn" ng-click="deleteSelected()"><i class="icon-trash icon-large" /></button>
+                        <button class="btn" ng-click="reloadFunction()"><i class="icon-refresh icon-large" /></button>
+                        <button class="btn"><i class="icon-cog icon-large" /></button>
+                    </div>
+                </div>
+            </th>
+        <tr>
+            <th class="select"><input type="checkbox" id="select_all" ng-model="selectAllValue" ng-change="selectAll()" /></td></th>
+            <th ng-repeat="col in columns" ng-click="sort(col.attribute)">{{col.title}} <i ng-show="sortPredicate == col.attribute" ng-class="sortReverse?'icon-angle-up':'icon-angle-down'" /><div class="sizehandler">&nbsp;</div></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="entity in entities | filter: filterValue | orderBy:sortPredicate:sortReverse" ng-class="{selected: entity.selected}">
+            <td class="select"><input type="checkbox" ng-model="entity.selected" /></td>
+            <td ng-repeat="col in columns"><a href="{{editLinkPrefix + entity._id}}">{{entity[col.attribute]}}</a></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+

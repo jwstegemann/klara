@@ -151,7 +151,7 @@
 			"file": "src/main/webapp/static/js/app.js",
 			"settings":
 			{
-				"buffer_size": 2214,
+				"buffer_size": 5815,
 				"line_ending": "Windows"
 			}
 		},
@@ -159,7 +159,7 @@
 			"file": "src/main/webapp/static/js/controllers/schueler.js",
 			"settings":
 			{
-				"buffer_size": 4663,
+				"buffer_size": 4221,
 				"line_ending": "Windows"
 			}
 		},
@@ -167,7 +167,34 @@
 			"file": "src/main/webapp/static/partials/schuelerDetail.html",
 			"settings":
 			{
-				"buffer_size": 2352,
+				"buffer_size": 2215,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/main/scala/klara/system/Message.scala",
+			"settings":
+			{
+				"buffer_size": 905,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main/webapp/static/partials/schuelerList.html",
+			"settings":
+			{
+				"buffer_size": 2946,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "<!DOCTYPE html>\n<html ng-app=\"klara\">\n  <head>\n  	<meta charset=\"utf-8\">\n    <title>Klara - Lerncoaching Stegemann</title>\n    <!-- Bootstrap -->\n    <link href=\"css/klara.css\" rel=\"stylesheet\" media=\"screen\" />\n    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" media=\"screen\" />\n    <link href=\"css/font-awesome.min.css\" rel=\"stylesheet\" />\n    <link href=\"css/jquery.pnotify.default.css\" rel=\"stylesheet\" />\n    <link href=\"css/jquery.pnotify.default.icons.css\" rel=\"stylesheet\" />\n    <link href=\"css/bootstrap-select.min.css\" rel=\"stylesheet\" />\n    <!-- JS-Libraries -->\n    <script type=\"text/javascript\" src=\"lib/jquery-1.8.3.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/jquery.base64.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/bootstrap.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/angular-1.1.5.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/jquery.pnotify.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/bootstrap-select.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/angular-strap-dev.min.js\"></script>\n    <!-- App -->\n    <script type=\"text/javascript\" src=\"js/app.js\"></script>\n    <script type=\"text/javascript\" src=\"js/filters.js\"></script>\n    <script type=\"text/javascript\" src=\"js/directives.js\"></script>\n    <script type=\"text/javascript\" src=\"js/auth.js\"></script>\n    <script type=\"text/javascript\" src=\"js/controllers/schueler.js\"></script>\n    <script type=\"text/javascript\" src=\"js/controllers/login.js\"></script>\n    <script type=\"text/javascript\" src=\"js/controllers/user.js\"></script>\n  </head>\n  <body ng-controller=\"UserCtrl\" ng-init=\"init()\">\n    <div class=\"navbar navbar-fixed-top\" >\n      <div class=\"navbar-inner\">\n        <div class=\"container-fluid\">\n          <a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\">\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n          </a>\n          <a class=\"brand\" href=\"#\"><img src=\"img/logo_bw_small.png\" /> Lerncoaching Stegemann</a>\n          <div class=\"nav-collapse collapse\">\n            <p class=\"navbar-text pull-right\">\n              <i class=\"icon-user icon-large\"></i>&nbsp;&nbsp;<a href=\"#\" class=\"navbar-link\">{{user.firstName}}&nbsp;{{user.lastName}}</a>\n            </p>\n            <ul class=\"nav\">\n              <li class=\"active\"><a href=\"#\">Home</a></li>\n              <li><a href=\"#/schueler\">Schüler</a></li>\n            </ul>\n          </div><!--/.nav-collapse -->\n        </div>\n      </div>\n    </div>\n\n    <div class=\"container-fluid\">\n      <div class=\"row-fluid\">\n        <div id=\"viewContainer\" ng-view>\n          <p>Please acivate javascript in your browser to make this working!</p>\n        <div>\n      </div><!--/row-->\n    \n    </div><!--/.fluid-container-->\n\n\n    <div class=\"navbar navbar-fixed-bottom\">\n      <div class=\"navbar-inner\">\n          <p class=\"navbar-text statusBar\">&copy; 2013 by Lerncoaching Stegemann</p>\n      </div>\n    </div>\n\n  <!-- Login-Modal -->\n  <div id=\"login-holder\" class=\"modal hide fade\" tabindex=\"-1\" ng:controller=\"LoginCtrl\" style=\"z-index: 200000\">\n    <div class=\"modal-header\">\n      <h3 id=\"loginHolderLabel\">Login</h3>\n    </div>\n    <div class=\"modal-body\">\n      <div id=\"loginError\" class=\"alert alert-error hide fade in\">\n        <strong>Ihre Anmeldung ist fehlgeschlagen!</strong> Bitte korrigieren Sie Ihren Benutzername und / oder Ihr Passwort.\n      </div>\n      <form class=\"form-horizontal\" ng-submit=\"login()\">\n        <div class=\"control-group\">\n          <label class=\"control-label\" for=\"loginUsername\">Benutzername:</label><div class=\"controls\"><input type=\"text\" \n            id=\"loginUsername\" ng-model=\"username\" on-enter=\"login()\" /></div>\n        </div>\n        <div class=\"control-group\">\n          <label class=\"control-label\" for=\"loginPassword\">Passwort:</label><div class=\"controls\"><input type=\"password\" \n            id=\"loginPassword\" ng-model=\"password\" on-enter=\"login()\" /></div>\n        </div>\n      </form>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn btn-primary\" ng-click=\"login()\"><i class=\"icon-thumbs-up icon-white\"></i> anmelden</button>\n    </div>\n  </div>\n  <!-- end Login-Modal -->\n\n\n  <div id=\"busy\"class=\"modal-backdrop\" style=\"display: none\">\n    \n  </div>\n</html>",
+			"file": "src/main/webapp/static/index.html",
+			"file_size": 4480,
+			"file_write_time": 1372365487000000,
+			"settings":
+			{
+				"buffer_size": 4391,
 				"line_ending": "Windows"
 			}
 		}
@@ -196,6 +223,7 @@
 	},
 	"file_history":
 	[
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/lib/jquery.blockUI.js",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/entity/Entity.scala",
@@ -311,6 +339,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"z-ind",
 			"startsWith",
 			"createSession",
 			"EntityJsonProtocol",
@@ -355,7 +384,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -363,15 +392,15 @@
 					"file": "src/main/webapp/static/js/app.js",
 					"settings":
 					{
-						"buffer_size": 2214,
+						"buffer_size": 5815,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1800,
-								1800
+								4493,
+								4493
 							]
 						],
 						"settings":
@@ -381,7 +410,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 270.0,
+						"translation.y": 2205.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -391,15 +420,15 @@
 					"file": "src/main/webapp/static/js/controllers/schueler.js",
 					"settings":
 					{
-						"buffer_size": 4663,
+						"buffer_size": 4221,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4340,
-								4340
+								4209,
+								4209
 							]
 						],
 						"settings":
@@ -409,7 +438,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2070.0,
+						"translation.y": 1333.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -419,15 +448,15 @@
 					"file": "src/main/webapp/static/partials/schuelerDetail.html",
 					"settings":
 					{
-						"buffer_size": 2352,
+						"buffer_size": 2215,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1909,
-								1909
+								0,
+								0
 							]
 						],
 						"settings":
@@ -436,6 +465,88 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 360.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/main/scala/klara/system/Message.scala",
+					"settings":
+					{
+						"buffer_size": 905,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/main/webapp/static/partials/schuelerList.html",
+					"settings":
+					{
+						"buffer_size": 2946,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1449,
+								1449
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 360.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/main/webapp/static/index.html",
+					"settings":
+					{
+						"buffer_size": 4391,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4374,
+								4374
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
