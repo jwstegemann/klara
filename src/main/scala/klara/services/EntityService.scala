@@ -41,10 +41,7 @@ trait EntityService {
 
   private implicit val timeout = new Timeout(5 seconds)
 
-  protected val prefix: String
-  protected val entityActor: ActorRef
-
-  def route[T <: Entity: ClassTag](userContext: UserContext)(implicit marshaller: spray.httpx.marshalling.Marshaller[Future[T]],
+  def route[T <: Entity: ClassTag](prefix: String, entityActor: ActorRef, userContext: UserContext)(implicit marshaller: spray.httpx.marshalling.Marshaller[Future[T]],
   		listMarshaller: Marshaller[Future[List[T]]],
   		insMarsh: Marshaller[scala.concurrent.Future[Inserted]],
   		delMarsh: Marshaller[scala.concurrent.Future[Deleted]],

@@ -31,29 +31,36 @@ angular.module('klaraDirectives', []).directive('onKeyUp', function() {
             } 
         });
     };
-}).directive('entityTable', function() {
+}).directive('entityTable', function($timeout) {
     return {
         restrict: 'E',
         replace: true,
         transclude: true,
         scope: { 
+            options: '=options',
             createLink: '@create',
             deleteFunction: '&delete',
             reloadFunction: '&reload',
             entities: '=entities',
             columns: '=columns',
             editLinkPrefix: '@editPrefix'
+//            selectedElement: '=selectedElement',
         },
-        controller: function($scope, $element, $attrs, $filter) {
+        controller: function($scope, $element, $attrs, $filter, $location) {
             $scope.selectAllValue = false;
             $scope.sortReverse = false;
+
+            $scope.selectedElement = {};
+
 //            $scope.sortPredicate = "name"; //TODO: init-Wert
             $scope.colspan = $scope.columns.length + 1;
 
             $scope.selectAll = function() {
-                angular.forEach($scope.entities, function(item, index) {
-                    item.selected = $scope.selectAllValue;
-                });
+                if ($scope.options.selection == 'many') {
+                    angular.forEach($scope.entities, function(item, index) {
+                        item.selected = $scope.selectAllValue;
+                    });
+                }
             } 
 
             $scope.sort = function(attribute) {
@@ -67,59 +74,96 @@ angular.module('klaraDirectives', []).directive('onKeyUp', function() {
             }
 
             $scope.selectedItems = function() {
-              var visibleItems = $filter('filter')($scope.entities, $scope.filterValue);
-              return $filter('filter')(visibleItems, {selected: true});
+              if ($scope.options.selection == 'many') {
+                var visibleItems = $filter('filter')($scope.entities, $scope.filterValue);
+                return $filter('filter')(visibleItems, {selected: true});
+              }
+              else if ($scope.options.selection == 'many') {
+                return [selectedElement];
+              }
+              else {
+                return [];
+              }
             }
 
             $scope.deleteSelected = function() {
-              angular.forEach($scope.selectedItems(), function(item, index) {
-                $scope.deleteFunction({id: item._id});
-              });
-              $scope.reloadFunction();
+              if (!$scope.options.noDelete) {
+                  var numberText = "den ausgewählten Eintrag";
+                  var selectedItems = $scope.selectedItems();
+                  if (selectedItems.length > 1) numberText = "die " + selectedItems.length + " ausgewählten Einträge";
+                  bootbox.confirm("Sind Sie sicher, dass Sie " + numberText + " löschen möchten?", function(result) {
+                    if (result) {
+                        $scope.$apply(function($scope) {
+                            angular.forEach(selectedItems, function(item, index) {
+                                $scope.deleteFunction({id: item._id});
+                            });
+                        });
+                    }
+                  }); 
+              }
             }            
-        },
-        templateUrl: "templates/entityTable.html",
-        compile: function($element, $attr, $linker) {
-        },
-        link: function($scope, $element, $attrs) {
-/*
+
+            $scope.editEntity = function(id, $event) {
+                if (!$scope.options.noEdit) {
+                    $location.path($scope.editLinkPrefix + id);
+                }
+            }
+
+            $scope.createEntity = function() {
+                if (!$scope.options.noCreate) {
+                    $location.path($scope.createLink);
+                }
+            }
+
+            /*
              * handle resizable columns
-             */
-            var pressed = false;
-            var start = undefined;
-            var startX, startWidth;
+            */
+            $scope.pressed = false;
+            $scope.start = undefined;
+            $scope.startX = 0;
+            $scope.startWidth = 0;
 
-            // prevent sorting when resizing cols
-            $element.find("thead tr th .sizehandler").click(function(e) {
-              e.stopImmediatePropagation()
-            });
-            
-            $element.find("thead tr th .sizehandler").mousedown(function(e) {
-                start = $(this).parent();
-                pressed = true;
-                startX = e.pageX;
-                startWidth = start.width();
+            // prevent sorting when resizing cols test
+            $scope.resizeClick = function($event) {
+                  $event.stopImmediatePropagation()
+            }
+                
+            $scope.startResize = function($event) {
+                $scope.start = angular.element($event.target).parent();
 
-                e.preventDefault();
+                $scope.pressed = true;
+                $scope.startX = $event.pageX;
+                $scope.startWidth = $scope.start.width();
 
-                $(start.parent().mousemove(function(e) {
-                  if(pressed) {
-                      $(start).width(startWidth+(e.pageX-startX));
+                $event.preventDefault();
+
+                $scope.start.parent().mousemove(function(e) {
+                  if($scope.pressed) {
+                      $($scope.start).width($scope.startWidth+(e.pageX-$scope.startX));
                       e.preventDefault();
                   }
-                }));
-            });
+                });
+            }
 
-            $(document).mouseup(function(e) {
-                e.preventDefault();
+            $scope.stopResize =  function($event) {
+                $event.preventDefault();
 
-                if(pressed) {
-                    pressed = false;
-                    start.parent().off('mousemove');
+                if($scope.pressed) {
+                    $scope.pressed = false;
+                    $scope.start.parent().off('mousemove');
                 }
-            });            
-        
-
+            }
+        },
+        templateUrl: "templates/entityTable.html"
+    }
+}).directive('onFinishRender', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            console.log("done linking: " + scope.$last);
+            if (scope.$last === true) {
+                scope.$eval(attr.onFinishRender);
+            }
         }
     }
 })

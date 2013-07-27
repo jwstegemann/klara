@@ -28,6 +28,12 @@ db.user.insert({
 // ***************************************** 
 
 /*
+ * Schueler updaten
+ */
+
+db.schueler.update({},{$set: {vertragspartner: {name: "Mueller", vorname: "Hannes", strasse: "A-Strasse", hausnummer: "21", plz: "12345", ort: "entenhausen"}}}, false, true);
+
+/*
  * Tokens
  */
 

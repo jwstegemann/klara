@@ -53,14 +53,19 @@ class SessionServiceActor extends Actor with ActorLogging {
   }
 
   def isSessionValid(sessionId: String, host: String) = {
+      //FIXME: Make this configurable
+      val dummyUserContext = UserContext("login","info","vorname","nachname",Nil)
+      sender ! Some(dummyUserContext)
+
       //TODO: use map instead of match?
-      sessions.get(sessionId) match {
+/*      sessions.get(sessionId) match {
         case Some(session) => {
           sender ! Some(session.userContext)
           sessions += (session.id -> (session withAccessTime currentTime))
         }
         case None => sender ! None
       }
+    */
   }
 
   def createSession(sid : String, userContext : UserContext, hostName : String) = {

@@ -25,6 +25,9 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
       when('/schueler', {templateUrl: 'partials/schuelerList.html', controller: SchuelerListCtrl}).
       when('/schueler/create', {templateUrl: 'partials/schuelerDetail.html', controller: SchuelerDetailCtrl}).
       when('/schueler/detail/:schuelerId', {templateUrl: 'partials/schuelerDetail.html', controller: SchuelerDetailCtrl}).
+      when('/schule', {templateUrl: 'partials/schuleList.html', controller: SchuleListCtrl}).
+      when('/schule/create', {templateUrl: 'partials/schuleDetail.html', controller: SchuleDetailCtrl}).
+      when('/schule/detail/:schuleId', {templateUrl: 'partials/schuleDetail.html', controller: SchuleDetailCtrl}).
       otherwise({redirectTo: '/schueler'});
   }]).config(function ($httpProvider) {
       $httpProvider.responseInterceptors.push('msgHttpInterceptor');
@@ -64,20 +67,14 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
     
     dictionaryService.cache = {};
 
-    function mapDictionary(response) {
-      var dict = {};
-      angular.forEach(response, function(keyValue, index) {
-        dict[keyValue.key] = keyValue.shortText;
-      });
-      return dict;      
-    }
-
     dictionaryService.reload = function(name) {
-      var deferred = $q.defer();
-      dictionaryService.cache[name] = deferred.promise;
-
-      $http.get("/dict/" + name).success(function(response) {
-        deferred.resolve(mapDictionary(response));
+      dictionaryService.cache[name] = $http.get("/dict/" + name).then(function(response) {
+//        console.log("mapping %o", response.data);
+        var dict = {};
+        angular.forEach(response.data, function(keyValue, index) {
+          dict[keyValue.key] = keyValue.shortText;
+        });
+        return dict;
       });
     }
 
@@ -91,12 +88,14 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
     return dictionaryService; 
   }).factory('message', function() {
     var messageService = {};
+    var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25};
     
     messageService.notice = function(title, text) {
       $.pnotify({
         title: title,
         text: text,
-        styling: 'bootstrap'
+        addclass: "stack-bottomright",
+        stack: stack_bottomright
       });
     }
 
@@ -105,7 +104,8 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
         title: title,
         text: text,
         type: 'info',
-        styling: 'bootstrap'
+        addclass: "stack-bottomright",
+        stack: stack_bottomright
       });
     }
 
@@ -114,7 +114,8 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
         title: title,
         text: text,
         type: 'success',
-        styling: 'bootstrap'
+        addclass: "stack-bottomright",
+        stack: stack_bottomright
       });
     }
 
@@ -125,7 +126,8 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
         title: error.text,
         text: details + " (" + status + ")",
         type: 'error',
-        styling: 'bootstrap'
+        addclass: "stack-bottomright",
+        stack: stack_bottomright
       });
       console.log("Fehler:" + angular.toJson(error, true));
     }
@@ -135,7 +137,8 @@ angular.module('klara', ['klaraFilters','klaraDirectives','http-auth-interceptor
         title: "Technischer Fehler",
         text: text + " (" + status + ").<br>Bitte wenden Sie sich an Ihren Systemadministrator.",
         type: 'error',
-        styling: 'bootstrap'
+        addclass: "stack-bottomright",
+        stack: stack_bottomright
       });
       console.log("Technischer Fehler:" + text + " (" + status + ")");
     }

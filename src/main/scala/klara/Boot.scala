@@ -13,8 +13,11 @@ import klara.system.DictionaryServiceActor
 import klara.schueler.SchuelerActor
 import klara.schueler.SchuelerService
 
+import klara.schule.SchuleActor
+import klara.schule.SchuleService
 
-class RootServiceActor extends Actor with ActorLogging with SchuelerService with UserService with StaticService with DictionaryService with SessionAware {
+
+class RootServiceActor extends Actor with ActorLogging with SchuelerService with SchuleService with UserService with StaticService with DictionaryService with SessionAware {
 
   def actorRefFactory = context
 
@@ -23,6 +26,7 @@ class RootServiceActor extends Actor with ActorLogging with SchuelerService with
     staticRoute ~ 
     authenticate(SessionCookieAuth()(sessionServiceActor, context.dispatcher)) { userContext => //FIXME: make sessionServiceActor implicit again
       schuelerRoute(userContext) ~
+      schuleRoute(userContext) ~
       dictionaryRoute
     }
   )
@@ -40,8 +44,8 @@ object Boot extends App with SprayCanHttpServerApp {
   /*
    * Domain Actors 
    */  
-  // create and start the schueler service
   val schueler = system.actorOf(Props[SchuelerActor], "schueler")  
+  val schule = system.actorOf(Props[SchuleActor], "schule")  
 
   /*
    * Web Actors

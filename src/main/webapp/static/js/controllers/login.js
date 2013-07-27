@@ -12,10 +12,7 @@ function LoginCtrl($scope, $http, authService) {
 	}
 
     $scope.login = function() {
-
-		console.log("username: " + $scope.username);
-		console.log("passoword: " + $scope.password);
-    
+   
 		var loginRequest = {username: $scope.username, password: $scope.password}
 
 		// empty password for next try

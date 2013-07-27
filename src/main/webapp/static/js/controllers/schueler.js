@@ -2,23 +2,25 @@
 
 /* Controllers */
 
-function SchuelerListCtrl($scope, $http, $filter, message) {
+function SchuelerListCtrl($scope, $http, $filter, dictionary, message) {
   var url = "/schueler"
+  /*
+   * init dictionaries
+   */
+  $scope.geschlecht = dictionary.get("Geschlecht");    
 
-  $scope.schuelerList = [];
+  $scope.schuelerList = undefined;
   $scope.columns = [
     {title: "Name", attribute: "name"},
     {title: "Vorname", attribute: "vorname"},
-    {title: "Geschlecht", attribute: "geschlecht"}
+    {title: "Geschlecht", attribute: "geschlecht", dictionary: $scope.geschlecht}
   ];
+
+  $scope.optionen =  {selection: 'many'};
 
   $scope.reload = function() {
 		$http.get(url).success(function(response) {
 			$scope.schuelerList = response;
-      console.log("XXXXXXXXXXXXXXXXXXXXXXX: reloaded!");
-		}).error(function(data, status, headers, config) {
-      //TODO: msg
-			alert("Fehler: " + data	);
 		});
   }
 
@@ -28,8 +30,15 @@ function SchuelerListCtrl($scope, $http, $filter, message) {
 
   $scope.deleteSchueler = function(schuelerId) {
     $http.delete(url + "/" + schuelerId).success(function(response) {
-        message.success('Löschen erfolgreich.','Die Entität mit der id ' + schuelerId + ' wurde entfernt.');
-      })     
+        console.log("geloescht: " + schuelerId);
+        $scope.reload();
+        message.success('Löschen erfolgreich.','Der Schüler mit der id ' + schuelerId + ' wurde entfernt.');
+    });
+  }
+
+  $scope.test = function(value) {
+    console.log("called function!");
+    return value;
   }
 }
 
@@ -39,6 +48,8 @@ function SchuelerListCtrl($scope, $http, $filter, message) {
  */
 
  function SchuelerDetailCtrl($scope, $routeParams, $http, $location, dictionary, message) {
+
+  $scope.activeSection = "personenDaten";
 
   var createMode = false;
   if($routeParams.schuelerId == undefined) createMode = true;
@@ -63,9 +74,11 @@ function SchuelerListCtrl($scope, $http, $filter, message) {
     });
   }
 
-  $scope.save = function() {
+  $scope.save = function(close) {
     request.data = $scope.schueler;
     $http(request).success(function(response) {
+      if(close) $scope.goToList();
+      else $scope.reload();
       message.success('Herzlichen Glückwunch!','Ihre Änderungen wurden erfolgreich gespeichert.');
     }).error(function(data, status, headers, config) {
       if(status == 412) {
@@ -103,3 +116,58 @@ function SchuelerListCtrl($scope, $http, $filter, message) {
 
 }
 
+function SelectReferenceCtrl($scope, $routeParams, $http, $location, dictionary, message) {
+
+  var url = "/schule"
+
+  var selectionModal = $('#selection-modal');
+
+  console.log("modal: %o", selectionModal);
+
+  selectionModal.modal({
+    keyboard: true,
+    backdrop: "static",
+    show: false
+  });
+
+  selectionModal.on('show', function () {
+    $scope.reload();
+  });
+
+  /*
+   * init dictionaries
+   */
+  $scope.schulform = dictionary.get("Schulform"); 
+
+  $scope.columns = [
+    {title: "Name", attribute: "name"},
+    {title: "Schulform", attribute: "schulform", dictionary: $scope.schulform}
+  ];
+
+  $scope.entitiesList = undefined;
+  $scope.selectedElement = undefined;
+
+  $scope.optionen =  {noCreate: true, noDelete: true, noEdit: true, selection: 'single'};
+
+  $scope.reload = function() {
+    $http.get(url).success(function(response) {
+      $scope.entitiesList = response;
+    });
+  }  
+
+  $scope.select = function() {
+    selectionModal.modal('hide');
+  }
+
+  $scope.cancel = function() {
+    selectionModal.modal('hide');
+  }
+
+  $scope.openSelection = function() {
+    selectionModal.modal('show');
+  }
+
+  $scope.changeSelection = function(value) {
+    console.log("change Value: %o", value)
+  }
+}
