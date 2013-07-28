@@ -17,7 +17,7 @@
             </th>
         </tr>
         <tr ng-mouseup="stopResize($event)" class="column-headers">
-            <th class="select" ng-if="options.selection != undefined"><input type="checkbox" id="select_all" ng-model="selectAllValue" ng-change="selectAll()" ng-if="options.selection == 'many'"/></th>
+            <th class="select" ng-hide="options.selection == undefined"><input type="checkbox" id="select_all" ng-model="selectAllValue" ng-change="selectAll()" ng-show="options.selection == 'many'" /></th>
             <th ng-repeat="col in columns" ng-click="sort(col.attribute)" class="colhead">{{col.title}} <i ng-show="sortPredicate == col.attribute" ng-class="sortReverse?'icon-angle-up':'icon-angle-down'" />
                 <div class="sizehandler" ng-click="resizeClick($event)" ng-mousedown="startResize($event)">&nbsp;</div>
             </th>
@@ -25,10 +25,10 @@
     </thead>
     <tbody>
         <tr ng-repeat="entity in entities | filter: filterValue | orderBy:sortPredicate:sortReverse" ng-dblclick="editEntity(entity._id, $event)" ng-class="{selected: entity.selected}" class="entityTableRow">
-            <td ng-if="options.selection != undefined" class="select">
+            <td ng-hide="options.selection == undefined" class="select">
                 <ng-switch on="options.selection">
                     <input ng-switch-when="many" type="checkbox" ng-model="entity.selected" />
-                    <input ng-switch-when="single" type="radio" ng-model="selectedElement" ng-value="entity" ng-change="changeSelection(entity)" />
+                    <input ng-switch-when="single" type="radio" ng-model="selection.element" ng-value="entity" />
                 </ng-switch>
             </td>
             <td ng-repeat="col in columns">
@@ -36,9 +36,6 @@
                     <span ng-switch-when="undefined">{{entity[col.attribute]}}</span>
                     <span ng-switch-default=>{{col.dictionary[entity[col.attribute]]}}</span>
                 </ng-switch>
-            </td>
-            <td>
-                selected: {{selectedElement._id}}
             </td>
         </tr>
     </tbody>

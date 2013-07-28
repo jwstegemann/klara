@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"attr",
+				"attribute"
+			],
+			[
+				"sortabl",
+				"sortableColumnsCtrl"
+			],
+			[
+				"sortable",
+				"sortableColumns"
+			],
+			[
+				"sort",
+				"sortableColumnsCtrl"
+			],
+			[
 				"Dic",
 				"DictionaryRegistry"
 			],
@@ -148,10 +164,21 @@
 	"buffers":
 	[
 		{
-			"file": "src/main/webapp/static/js/app.js",
+			"file": "src/main/webapp/static/templates/entityTable.html",
 			"settings":
 			{
-				"buffer_size": 5815,
+				"buffer_size": 2837,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "'use strict';\n\n/* Directives */\n\n\nangular.module('klaraDirectives', []).directive('onKeyUp', function() {\n    return function(scope, elm, attrs) {\n        //Evaluate the variable that was passed\n        //In this case we're just passing a variable that points\n        //to a function we'll call each keyup\n        var keyupFn = scope.$eval(attrs.onKeyUp);\n        elm.bind('keyup', function(evt) {\n            //$apply makes sure that angular knows \n            //we're changing something\n            scope.$apply(function() {\n                keyupFn.call(scope, evt.which);\n            });\n        });\n    };\n}).directive('onEnter', function() {\n    return function(scope, elm, attrs) {\n        function applyKeyup() {\n          scope.$apply(attrs.onEnter);\n        };           \n        \n        var allowedKeys = scope.$eval(attrs.keys);\n        elm.bind('keyup', function(evt) {\n            //if no key restriction specified, always fire\n            if (evt.which == 13) {\n                applyKeyup();\n            } \n        });\n    };\n}).directive('entityTable', function($timeout) {\n    return {\n        restrict: 'E',\n        replace: true,\n        transclude: true,\n        scope: { \n            options: '=options',\n            createLink: '@create',\n            deleteFunction: '&delete',\n            reloadFunction: '&reload',\n            entities: '=entities',\n            columns: '=columns',\n            editLinkPrefix: '@editPrefix'\n//            selectedElement: '=selectedElement',\n        },\n        controller: function($scope, $element, $attrs, $filter, $location) {\n            $scope.selectAllValue = false;\n            $scope.sortReverse = false;\n\n            $scope.selection = {};\n\n//            $scope.sortPredicate = \"name\"; //TODO: init-Wert\n            $scope.colspan = $scope.columns.length + 1;\n\n            $scope.selectAll = function() {\n                if ($scope.options.selection == 'many') {\n                    angular.forEach($scope.entities, function(item, index) {\n                        item.selected = $scope.selectAllValue;\n                    });\n                }\n            } \n\n            $scope.sort = function(attribute) {\n                if (attribute == $scope.sortPredicate) {\n                  $scope.sortReverse = !$scope.sortReverse;\n                }\n                else {\n                  $scope.sortPredicate = attribute;\n                  $scope.sortReverse = false;\n                }\n            }\n\n            $scope.selectedItems = function() {\n              if ($scope.options.selection == 'many') {\n                var visibleItems = $filter('filter')($scope.entities, $scope.filterValue);\n                return $filter('filter')(visibleItems, {selected: true});\n              }\n              else if ($scope.options.selection == 'single') {\n                return [$scope.selection.element];\n              }\n              else {\n                return [];\n              }\n            }\n\n            $scope.deleteSelected = function() {\n              if (!$scope.options.noDelete) {\n                  var numberText = \"den ausgewählten Eintrag\";\n                  var selectedItems = $scope.selectedItems();\n                  if (selectedItems.length > 1) numberText = \"die \" + selectedItems.length + \" ausgewählten Einträge\";\n                  bootbox.confirm(\"Sind Sie sicher, dass Sie \" + numberText + \" löschen möchten?\", function(result) {\n                    if (result) {\n                        $scope.$apply(function($scope) {\n                            angular.forEach(selectedItems, function(item, index) {\n                                $scope.deleteFunction({id: item._id});\n                            });\n                        });\n                    }\n                  }); \n              }\n            }            \n\n            $scope.editEntity = function(id, $event) {\n                if (!$scope.options.noEdit) {\n                    $location.path($scope.editLinkPrefix + id);\n                }\n            }\n\n            $scope.createEntity = function() {\n                if (!$scope.options.noCreate) {\n                    $location.path($scope.createLink);\n                }\n            }\n\n            /*\n             * handle resizable columns\n            */\n            $scope.pressed = false;\n            $scope.start = undefined;\n            $scope.startX = 0;\n            $scope.startWidth = 0;\n\n            // prevent sorting when resizing cols test\n            $scope.resizeClick = function($event) {\n                  $event.stopImmediatePropagation()\n            }\n                \n            $scope.startResize = function($event) {\n                $scope.start = angular.element($event.target).parent();\n\n                $scope.pressed = true;\n                $scope.startX = $event.pageX;\n                $scope.startWidth = $scope.start.width();\n\n                $event.preventDefault();\n\n                $scope.start.parent().mousemove(function(e) {\n                  if($scope.pressed) {\n                      $($scope.start).width($scope.startWidth+(e.pageX-$scope.startX));\n                      e.preventDefault();\n                  }\n                });\n            }\n\n            $scope.stopResize =  function($event) {\n                $event.preventDefault();\n\n                if($scope.pressed) {\n                    $scope.pressed = false;\n                    $scope.start.parent().off('mousemove');\n                }\n            }\n        },\n        templateUrl: \"templates/entityTable.html\"\n    }\n}).directive('onFinishRender', function () {\n    return {\n        restrict: 'A',\n        link: function (scope, element, attr) {\n            console.log(\"done linking: \" + scope.$last);\n            if (scope.$last === true) {\n                scope.$eval(attr.onFinishRender);\n            }\n        }\n    }\n})\n\n/*.directive('selectAll', function() {\n    return {\n        restrict: 'A',\n        replace: false,\n        transclude: true,\n        scope: { model: '=model'},\n        controller: function($scope, $element, $attrs) {\n            $scope.selectValue = false;\n\n            $scope.selectAll = function() {\n                angular.forEach($scope.model, function(item, index) {\n                    item.selected = $scope.selectValue;\n                });\n            }\n        },\n        template: '<input type=\"checkbox\" id=\"select_all\" ng-model=\"selectValue\" ng-change=\"selectAll()\" />',\n//        compile: function(element, attr, linker) {\n//        },\n        link: function($scope, $element, $attrs) {\n\n\n        }\n    }\n}).directive('resizableColumns', function() {\n    return {\n        restrict: 'A',\n        replace: false,\n        transclude: false,\n        compile: function($element, $attr, $linker) {\n            var pressed = false;\n            var start = undefined;\n            var startX, startWidth;\n\n            // prevent sorting when resizing cols\n            $element.find(\"thead tr th .sizehandler\").click(function(e) {\n              e.stopImmediatePropagation()\n            });\n            \n            $element.find(\"thead tr th .sizehandler\").mousedown(function(e) {\n                start = $(this).parent();\n                pressed = true;\n                startX = e.pageX;\n                startWidth = start.width();\n\n                e.preventDefault();\n\n                $(start.parent().mousemove(function(e) {\n                  if(pressed) {\n                      $(start).width(startWidth+(e.pageX-startX));\n                      e.preventDefault();\n                  }\n                }));\n            });\n\n            $(document).mouseup(function(e) {\n                e.preventDefault();\n\n                if(pressed) {\n                    pressed = false;\n                    start.parent().off('mousemove');\n                }\n            });            \n        }\n    }\n})\n*/\n\n\n\n",
+			"file": "src/main/webapp/static/js/directives.js",
+			"file_size": 8080,
+			"file_write_time": 1375029490000000,
+			"settings":
+			{
+				"buffer_size": 7836,
 				"line_ending": "Windows"
 			}
 		},
@@ -159,7 +186,15 @@
 			"file": "src/main/webapp/static/js/controllers/schueler.js",
 			"settings":
 			{
-				"buffer_size": 4221,
+				"buffer_size": 4072,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/main/webapp/static/js/controllers/schule.js",
+			"settings":
+			{
+				"buffer_size": 2768,
 				"line_ending": "Windows"
 			}
 		},
@@ -167,34 +202,7 @@
 			"file": "src/main/webapp/static/partials/schuelerDetail.html",
 			"settings":
 			{
-				"buffer_size": 2215,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "src/main/scala/klara/system/Message.scala",
-			"settings":
-			{
-				"buffer_size": 905,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/main/webapp/static/partials/schuelerList.html",
-			"settings":
-			{
-				"buffer_size": 2946,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "<!DOCTYPE html>\n<html ng-app=\"klara\">\n  <head>\n  	<meta charset=\"utf-8\">\n    <title>Klara - Lerncoaching Stegemann</title>\n    <!-- Bootstrap -->\n    <link href=\"css/klara.css\" rel=\"stylesheet\" media=\"screen\" />\n    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" media=\"screen\" />\n    <link href=\"css/font-awesome.min.css\" rel=\"stylesheet\" />\n    <link href=\"css/jquery.pnotify.default.css\" rel=\"stylesheet\" />\n    <link href=\"css/jquery.pnotify.default.icons.css\" rel=\"stylesheet\" />\n    <link href=\"css/bootstrap-select.min.css\" rel=\"stylesheet\" />\n    <!-- JS-Libraries -->\n    <script type=\"text/javascript\" src=\"lib/jquery-1.8.3.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/jquery.base64.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/bootstrap.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/angular-1.1.5.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/jquery.pnotify.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/bootstrap-select.min.js\"></script>\n    <script type=\"text/javascript\" src=\"lib/angular-strap-dev.min.js\"></script>\n    <!-- App -->\n    <script type=\"text/javascript\" src=\"js/app.js\"></script>\n    <script type=\"text/javascript\" src=\"js/filters.js\"></script>\n    <script type=\"text/javascript\" src=\"js/directives.js\"></script>\n    <script type=\"text/javascript\" src=\"js/auth.js\"></script>\n    <script type=\"text/javascript\" src=\"js/controllers/schueler.js\"></script>\n    <script type=\"text/javascript\" src=\"js/controllers/login.js\"></script>\n    <script type=\"text/javascript\" src=\"js/controllers/user.js\"></script>\n  </head>\n  <body ng-controller=\"UserCtrl\" ng-init=\"init()\">\n    <div class=\"navbar navbar-fixed-top\" >\n      <div class=\"navbar-inner\">\n        <div class=\"container-fluid\">\n          <a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\">\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n          </a>\n          <a class=\"brand\" href=\"#\"><img src=\"img/logo_bw_small.png\" /> Lerncoaching Stegemann</a>\n          <div class=\"nav-collapse collapse\">\n            <p class=\"navbar-text pull-right\">\n              <i class=\"icon-user icon-large\"></i>&nbsp;&nbsp;<a href=\"#\" class=\"navbar-link\">{{user.firstName}}&nbsp;{{user.lastName}}</a>\n            </p>\n            <ul class=\"nav\">\n              <li class=\"active\"><a href=\"#\">Home</a></li>\n              <li><a href=\"#/schueler\">Schüler</a></li>\n            </ul>\n          </div><!--/.nav-collapse -->\n        </div>\n      </div>\n    </div>\n\n    <div class=\"container-fluid\">\n      <div class=\"row-fluid\">\n        <div id=\"viewContainer\" ng-view>\n          <p>Please acivate javascript in your browser to make this working!</p>\n        <div>\n      </div><!--/row-->\n    \n    </div><!--/.fluid-container-->\n\n\n    <div class=\"navbar navbar-fixed-bottom\">\n      <div class=\"navbar-inner\">\n          <p class=\"navbar-text statusBar\">&copy; 2013 by Lerncoaching Stegemann</p>\n      </div>\n    </div>\n\n  <!-- Login-Modal -->\n  <div id=\"login-holder\" class=\"modal hide fade\" tabindex=\"-1\" ng:controller=\"LoginCtrl\" style=\"z-index: 200000\">\n    <div class=\"modal-header\">\n      <h3 id=\"loginHolderLabel\">Login</h3>\n    </div>\n    <div class=\"modal-body\">\n      <div id=\"loginError\" class=\"alert alert-error hide fade in\">\n        <strong>Ihre Anmeldung ist fehlgeschlagen!</strong> Bitte korrigieren Sie Ihren Benutzername und / oder Ihr Passwort.\n      </div>\n      <form class=\"form-horizontal\" ng-submit=\"login()\">\n        <div class=\"control-group\">\n          <label class=\"control-label\" for=\"loginUsername\">Benutzername:</label><div class=\"controls\"><input type=\"text\" \n            id=\"loginUsername\" ng-model=\"username\" on-enter=\"login()\" /></div>\n        </div>\n        <div class=\"control-group\">\n          <label class=\"control-label\" for=\"loginPassword\">Passwort:</label><div class=\"controls\"><input type=\"password\" \n            id=\"loginPassword\" ng-model=\"password\" on-enter=\"login()\" /></div>\n        </div>\n      </form>\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"btn btn-primary\" ng-click=\"login()\"><i class=\"icon-thumbs-up icon-white\"></i> anmelden</button>\n    </div>\n  </div>\n  <!-- end Login-Modal -->\n\n\n  <div id=\"busy\"class=\"modal-backdrop\" style=\"display: none\">\n    \n  </div>\n</html>",
-			"file": "src/main/webapp/static/index.html",
-			"file_size": 4480,
-			"file_write_time": 1372365487000000,
-			"settings":
-			{
-				"buffer_size": 4391,
+				"buffer_size": 6492,
 				"line_ending": "Windows"
 			}
 		}
@@ -223,6 +231,14 @@
 	},
 	"file_history":
 	[
+		"/home/tiberius/scala/projects/klara/curl/schueler/create",
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/app.js",
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/controllers/schueler.js",
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/partials/schuelerDetail.html",
+		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/Message.scala",
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/partials/schuelerList.html",
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/directives.js",
+		"/home/tiberius/scala/projects/klara/src/main/webapp/static/index.html",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/lib/jquery.blockUI.js",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/Boot.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/EntityActor.scala",
@@ -243,7 +259,6 @@
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/SessionServiceActor.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoJsonProtocol.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/AuthenticationDomain.scala",
-		"/home/tiberius/scala/projects/klara/curl/schueler/create",
 		"/home/tiberius/scala/projects/klara/curl/schueler/create_with_id",
 		"/home/tiberius/scala/projects/klara/curl/schueler/delete",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/MongoUsingActor.scala",
@@ -263,7 +278,6 @@
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/messages/EntityMessages.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/MessageHandling.scala",
 		"/home/tiberius/scala/projects/klara/curl/tests.txt",
-		"/home/tiberius/scala/projects/klara/src/main/scala/klara/system/Message.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/utils/HandlingError.scala",
 		"/home/tiberius/scala/projects/klara/src/main/resources/logback.xml",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/UserContextActor.scala",
@@ -271,18 +285,13 @@
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/services/StaticService.scala",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/mongo/UsingMongo.scala",
 		"/home/tiberius/scala/projects/klara/mongoDB/create_scripts",
-		"/home/tiberius/scala/projects/klara/src/main/webapp/static/index.html",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/css/klara.css",
-		"/home/tiberius/scala/projects/klara/src/main/webapp/static/partials/schuelerDetail.html",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/controllers/user.js",
-		"/home/tiberius/scala/projects/klara/src/main/webapp/static/partials/schuelerList.html",
-		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/app.js",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/filters.js",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/css/bootstrap.min.css",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/auth.js",
 		"/home/tiberius/scala/projects/klara/src/main/resources/application.conf",
 		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/controllers/login.js",
-		"/home/tiberius/scala/projects/klara/src/main/webapp/static/js/directives.js",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/AuthenticationProtocoll.scala",
 		"/home/tiberius/.config/sublime-text-2/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/tiberius/scala/projects/klara/src/main/scala/klara/auth/MongoAuthenticator.scala",
@@ -384,131 +393,23 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/main/webapp/static/js/app.js",
+					"file": "src/main/webapp/static/templates/entityTable.html",
 					"settings":
 					{
-						"buffer_size": 5815,
+						"buffer_size": 2837,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4493,
-								4493
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2205.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/main/webapp/static/js/controllers/schueler.js",
-					"settings":
-					{
-						"buffer_size": 4221,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4209,
-								4209
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1333.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/main/webapp/static/partials/schuelerDetail.html",
-					"settings":
-					{
-						"buffer_size": 2215,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 360.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/main/scala/klara/system/Message.scala",
-					"settings":
-					{
-						"buffer_size": 905,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Scala/Scala.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "src/main/webapp/static/partials/schuelerList.html",
-					"settings":
-					{
-						"buffer_size": 2946,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1449,
-								1449
+								1508,
+								1508
 							]
 						],
 						"settings":
@@ -518,35 +419,118 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 360.0,
+						"translation.y": 90.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "src/main/webapp/static/index.html",
+					"buffer": 1,
+					"file": "src/main/webapp/static/js/directives.js",
 					"settings":
 					{
-						"buffer_size": 4391,
+						"buffer_size": 7836,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4374,
-								4374
+								2068,
+								2068
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 405.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/main/webapp/static/js/controllers/schueler.js",
+					"settings":
+					{
+						"buffer_size": 4072,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								607,
+								607
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/main/webapp/static/js/controllers/schule.js",
+					"settings":
+					{
+						"buffer_size": 2768,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								433,
+								433
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/main/webapp/static/partials/schuelerDetail.html",
+					"settings":
+					{
+						"buffer_size": 6492,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4349,
+								4358
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1080.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

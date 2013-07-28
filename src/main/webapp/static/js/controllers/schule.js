@@ -15,7 +15,7 @@ function SchuleListCtrl($scope, $http, $filter, dictionary, message) {
     {title: "Schulform", attribute: "schulform", dictionary: $scope.schulform}
   ];
 
-  $scope.optionen =  {selection: 'single'};
+  $scope.optionen =  {selection: 'many'};
 
   $scope.reload = function() {
 		$http.get(url).success(function(response) {

@@ -50,7 +50,7 @@ angular.module('klaraDirectives', []).directive('onKeyUp', function() {
             $scope.selectAllValue = false;
             $scope.sortReverse = false;
 
-            $scope.selectedElement = {};
+            $scope.selection = {};
 
 //            $scope.sortPredicate = "name"; //TODO: init-Wert
             $scope.colspan = $scope.columns.length + 1;
@@ -78,8 +78,8 @@ angular.module('klaraDirectives', []).directive('onKeyUp', function() {
                 var visibleItems = $filter('filter')($scope.entities, $scope.filterValue);
                 return $filter('filter')(visibleItems, {selected: true});
               }
-              else if ($scope.options.selection == 'many') {
-                return [selectedElement];
+              else if ($scope.options.selection == 'single') {
+                return [$scope.selection.element];
               }
               else {
                 return [];
